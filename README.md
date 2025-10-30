@@ -5,7 +5,7 @@
 
 # **BitePulse AI** 
 
-This project is the Capstone Project (AAI-590) for [the Applied Artificial Intelligence Master Program](https://onlinedegrees.sandiego.edu/masters-applied-artificial-intelligence/) at [the University of San Diego (USD)](https://www.sandiego.edu/). 
+This project is the Capstone Project (AAI-590) for [the M.S. in Applied Artificial Intelligence](https://onlinedegrees.sandiego.edu/masters-applied-artificial-intelligence/) at [the University of San Diego (USD)](https://www.sandiego.edu/). 
 
 -- **Project Status: Ongoing**
 
