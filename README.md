@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://github.com/user-attachments/assets/64d9919e-ff96-4588-ae68-75c3f22b160e" 
-       alt="Strivio logo" width="330" height="330" />
+       alt="Strivio logo" width="400" height="400" />
 </p>
 
 
