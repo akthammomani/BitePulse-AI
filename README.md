@@ -2,6 +2,7 @@
   <img src="https://github.com/user-attachments/assets/64d9919e-ff96-4588-ae68-75c3f22b160e" 
        alt="Strivio logo" width="400" height="400" />
 </p>
+
 # **BitePlus AI** 
 
 This project is a part of the Capstone Project (AAI-590) in [the Applied Artificial Intelligence Master Program](https://onlinedegrees.sandiego.edu/masters-applied-artificial-intelligence/) at [the University of San Diego (USD)](https://www.sandiego.edu/). 
