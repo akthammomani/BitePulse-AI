@@ -36,3 +36,23 @@ BitePulse AI serves both consumers (B2C) and wellness partners (B2B):
 ## **Data Source and Privacy**
 BitePulse AI is trained on [EatSense](https://groups.inf.ed.ac.uk/vision/DATASETS/EATSENSE/), a research dataset of real people eating real meals, with every frame labeled for actions like eating, chewing, drinking, or resting. Faces are anonymized. This lets us train deep learning models to detect bites and pacing patterns without recording new users.
 In the real product, BitePulse AI can run privately on device for consumers, or through a secure backend for wellness partners. For this capstone, we only use the public EatSense dataset, and we do not collect or store new personal video.
+
+## **Methods Used**
+
+* 
+* 
+
+
+## **Technologies**
+*
+*
+
+
+## **License**
+
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
+
+
+## **Acknowledgments**
+
+Thanks to Professor Anna Marbut for guidance and feedback.
