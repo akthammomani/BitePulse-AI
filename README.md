@@ -31,7 +31,7 @@ This is important for three reasons:
 ## **BitePulse AI Audience**
 BitePulse AI serves both consumers (B2C) and wellness partners (B2B):
 * For consumers (B2C), it helps everyday eaters who want better comfort after meals, calmer digestion, and more mindful control. A user can record a short meal clip and get clear feedback on their eating pace.
-* For wellness partners, like nutrition coaches and digital health platforms, BitePulse AI delivers objective eating behavior signals (for example, slow pauses versus nonstop bursts) through an API, without anyone having to watch the video. In both cases, the goal is awareness and coaching, not medical diagnosis.
+* For wellness partners (B2B), like nutrition coaches and digital health platforms, BitePulse AI delivers objective eating behavior signals (for example, slow pauses versus nonstop bursts) through an API, without anyone having to watch the video. In both cases, the goal is awareness and coaching, not medical diagnosis.
 
 ## **Data Source and Privacy**
 BitePulse AI is trained on [EatSense](https://groups.inf.ed.ac.uk/vision/DATASETS/EATSENSE/), a research dataset of real people eating real meals, with every frame labeled for actions like eating, chewing, drinking, or resting. Faces are anonymized. This lets us train deep learning models to detect bites and pacing patterns without recording new users.
