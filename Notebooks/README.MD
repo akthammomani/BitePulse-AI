@@ -9,19 +9,9 @@ Here in this notebook, we'll download, verify, and organize the EatSense dataset
 * Generate a quick inventory of folders, file counts, and sizes.
 * Sanity check the setup.
 
-**Folders Plan:** 
-
-* `.../eatsense/zips` holds the original downloads.
-* `.../eatsense/rgb` holds RGB videos.
-* `.../eatsense/depth` holds depth maps.
-* `.../eatsense/poses_true` holds true face pose csv files.
-* `.../eatsense/poses_fake` holds fake face pose csv files.
-* `.../eatsense/test holds` the official test set.
-* `.../eatsense/all_misc` holds documents and readme files
-
 ## **Label prep and task definition**
 
-In this notebook let's turn EatSense data into clean training targets for our BitePulse AI model. so we'll define what counts as an intake event; convert frame level labels into segments with start time and end time; and freeze person disjoint splits for train, validation, and test. By the end, we will have compact label tables that downstream notebooks can load directly.
+In this notebook, we'll turn EatSense data into clean training targets for our BitePulse AI model. so we'll define what counts as an intake event; convert frame level labels into segments with start time and end time; and freeze person disjoint splits for train, validation, and test. By the end, we will have compact label tables that downstream notebooks can load directly.
 
 We'll utilize the data we saved on our google drive: 
 
