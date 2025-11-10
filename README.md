@@ -69,7 +69,7 @@ Like most behavioral datasets, EatSense is not perfectly regular. There are occa
 
 Exploratory analysis of the window table reveals several patterns that connect directly to the project goal. Positive intake windows are short, often clustered around brief periods where the hand moves rapidly toward the mouth and then away, while the head remains relatively stable. Below chart illustrates this for a sample meal: the wrist trajectories show compact, directed paths toward the face during intake, contrasted with smaller, more diffuse motion when the participant is resting or chewing without new intake.
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/5d011134-730f-414a-a410-0344785e8854"  
+  <img src="https://github.com/user-attachments/assets/735f4888-1545-4e76-a047-b14162672e5a"  
        alt="Strivio logo" width="400" height="400" />
 </p>
 
