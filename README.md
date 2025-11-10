@@ -112,5 +112,5 @@ This project is licensed under the MIT License. See the [LICENSE](./LICENSE) fil
 Thanks to Professor Anna Marbut for guidance and feedback throughout the BitePulse AI capstone.
 
 This project also uses the **EatSense** dataset released by the University of Edinburgh School of Informatics.  
-Raza, M. A., Chen, L., Nanbo, L., & Fisher, R. B. (2023). *EatSense: Human centric, action recognition and localization dataset for understanding eating behaviors and quality of motion assessment*. Image and Vision Computing, 137, 104762.  
+Raza, M. A., Chen, L., Nanbo, L., & Fisher, R. B. (2023). *EatSense: Human centric, action recognition and localization dataset for understanding eating behaviors and quality of motion assessment, Image and Vision Computing*.  
 Dataset page: https://groups.inf.ed.ac.uk/vision/DATASETS/EATSENSE/
