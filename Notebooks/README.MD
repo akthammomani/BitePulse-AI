@@ -37,3 +37,26 @@ We'll utilize the data we saved on our google drive:
 
 I will not use depth in this notebook because my target app accepts user recorded RGB videos only. At inference time I can compute 2D poses from RGB, so training on 2D poses keeps training and deployment aligned.
 
+## **Feature Pipeline**
+
+Our goal in this notebook is to convert labeled meals into model-ready inputs by:
+
+* Cutting videos/poses into fixed windows,
+* Extracting pose & motion features (hand&rarr;mouth distance, wrist speed, elbow angle, etc.), and
+* Saving tensors + labels to disk for fast training.
+We'll also add a minimal metrics scaffold (precision/recall for intake events) to quickly sanity-check feature quality.
+
+We'll utilize the data we saved on our google drive from Label prep and task definition notebook - (label_v1):
+
+**Our inputs** from labels_v1: 
+
+* manifest_with_split.parquet: video paths + split
+* frames_idx.parquet: per-frame labels (label, time_sec, key, split)
+* segs_idx.parquet: intake segments (start_sec, end_sec, label, key, split)
+* subject_split.parquet: to avoid subject leakage 
+* true2d_parquet/<key>.parquet: per-frame 2D joints 
+
+
+
+
+
