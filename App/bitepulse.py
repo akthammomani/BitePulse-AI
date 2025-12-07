@@ -455,7 +455,7 @@ with st.sidebar:
 
 # 40/60 layout
 left_col, right_col = st.columns([4, 6])
-
+DISPLAY_HEIGHT_PX = 540
 with left_col:
     st.subheader("Live Analysis")
 
@@ -472,7 +472,7 @@ with left_col:
         video_html_attrs={
             "style": {
                 "width": "100%",
-                "height": "100%",
+                "height": f"{DISPLAY_HEIGHT_PX}px", #"100%",
                 "objectFit": "cover",
                 "border": "0",
                 "borderRadius": "10px"
@@ -561,3 +561,4 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
