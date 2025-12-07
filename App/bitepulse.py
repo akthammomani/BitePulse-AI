@@ -427,19 +427,29 @@ st.markdown(
 # Sidebar: Force TURN (relay)
 with st.sidebar:
     st.subheader("Connection")
+
+    # Toggle to control whether we force relay-only (TURN)
     force_turn = st.toggle(
         "Force TURN (relay only)",
         value=True,
         help="Requires TURN credentials in Secrets. Fixes strict NAT/firewalls."
     )
+
+    # DEBUG: show whether TURN creds loaded and which policy is active
+    cfg = build_rtc_config(force_turn)
+    has_turn = any(isinstance(s, dict) and "username" in s for s in cfg.get("iceServers", []))
+    st.caption(f"TURN loaded: {'yes' if has_turn else 'no'}")
+    st.caption(f"Policy: {cfg.get('iceTransportPolicy', 'all')}")
+
+    # Copy-paste guide for Secrets
     st.caption(
-        "Add TURN creds in Cloud → Settings → Secrets:\n\n"
+        "Add TURN creds in Cloud → Settings → Secrets (TOML):\n\n"
         "[turn]\n"
-        "url_1 = \"turn:global.relay.metered.ca:80\"\n"
-        "url_2 = \"turns:global.relay.metered.ca:443?transport=tcp\"\n"
+        "url_1 = \"turns:global.relay.metered.ca:443?transport=tcp\"\n"
         "username = \"YOUR_USER\"\n"
         "credential = \"YOUR_PASS\""
     )
+
 
 # 40/60 layout
 left_col, right_col = st.columns([4, 6])
@@ -555,5 +565,6 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
