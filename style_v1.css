@@ -43,11 +43,11 @@ button[type=submit]:hover {
 }
 
 .flex-item.introduction {
-    width: 35% !important; /* Set width to 35% */
+    width: 40% !important; /* Set width to 35% */
 }
 
 .flex-item.how-it-works {
-    width: 65% !important; /* Set width to 65% */
+    width: 60% !important; /* Set width to 65% */
 }
 
 .flex-item h2, .flex-item h3 {
