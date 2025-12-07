@@ -27,51 +27,29 @@ PAUSE_THRESHOLD_SEC = 10.0
 # ICE config (STUN + TURN)
 # ---------------------------
 def build_rtc_config(force_turn: bool) -> dict:
-    """
-    If force_turn=True:
-      - ONLY use TCP/TLS TURN (no STUN, no UDP) and set policy 'relay'
-    Else:
-      - fall back to public STUN, and include your TURN if present
-    """
-    turn = st.secrets.get("turn", {})
-
-    # Prefer TCP-only TURN to survive locked-down environments
-    tcp_turn_urls = [u for u in [
-        turn.get("url_tcp1"),  # e.g. "turn:global.relay.metered.ca:80?transport=tcp"
-        turn.get("url_tcp2"),  # e.g. "turns:global.relay.metered.ca:443?transport=tcp"
-    ] if u]
-
-    has_turn = bool(tcp_turn_urls and turn.get("username") and turn.get("credential"))
-
-    if force_turn and has_turn:
-        # RELAY-ONLY and TCP/TLS only. No STUN, no UDP.
-        return {
-            "iceServers": [{
-                "urls": tcp_turn_urls,
-                "username": turn["username"],
-                "credential": turn["credential"],
-            }],
-            "iceTransportPolicy": "relay",
-        }
-
-    # Non-forced: allow STUN and (optionally) TURN
+    # Always include a couple STUNs; they don’t hurt when policy='relay'
     ice_servers = [
         {"urls": [
             "stun:stun.l.google.com:19302",
             "stun:stun1.l.google.com:19302",
-            "stun:stun.cloudflare.com:3478",
         ]},
     ]
+
+    t = st.secrets.get("turn", {})
+    turn_urls = [u for u in (t.get("url_tcp1"), t.get("url_tcp2")) if u]
+    has_turn = bool(turn_urls and t.get("username") and t.get("credential"))
+
     if has_turn:
         ice_servers.append({
-            "urls": tcp_turn_urls,
-            "username": turn["username"],
-            "credential": turn["credential"],
+            "urls": turn_urls,
+            "username": t["username"],
+            "credential": t["credential"],
         })
+
+    # Force relay only when the sidebar toggle is on and TURN is present.
+    if force_turn and has_turn:
+        return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
     return {"iceServers": ice_servers}
-
-
-
 
 def _safe_rerun():
     if hasattr(st, "rerun"):
@@ -453,21 +431,18 @@ st.markdown(
 # Sidebar: Force TURN (relay)
 with st.sidebar:
     st.subheader("Connection")
-    force_turn = st.toggle("Force TURN (relay only)", value=True,
-                           help="Keeps only TCP/TLS TURN (443/80). Fixes strict NAT/firewalls.")
+    force_turn = st.toggle("Force TURN (relay only)", value=True)
     cfg = build_rtc_config(force_turn)
-    has_turn = any(isinstance(s, dict) and "username" in s for s in cfg.get("iceServers", []))
-    st.caption(f"TURN loaded: {'yes' if has_turn else 'no'}")
+
+    has_turn_loaded = any(
+        isinstance(s, dict)
+        and any(isinstance(s.get("urls"), list) and ("turn:" in u or "turns:" in u) for u in [*s.get("urls", [])])
+        and ("username" in s) and ("credential" in s)
+        for s in cfg.get("iceServers", [])
+    )
+    st.caption(f"TURN loaded: {'yes' if has_turn_loaded else 'no'}")
     st.caption(f"Policy: {cfg.get('iceTransportPolicy', 'all')}")
 
-    st.caption(
-        "Secrets format (TOML):\n\n"
-        "[turn]\n"
-        "url_tcp1   = \"turn:global.relay.metered.ca:80?transport=tcp\"\n"
-        "url_tcp2   = \"turns:global.relay.metered.ca:443?transport=tcp\"\n"
-        "username   = \"<paste-from-Metered>\"\n"
-        "credential = \"<paste-from-Metered>\""
-    )
 
 
 
@@ -585,6 +560,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
