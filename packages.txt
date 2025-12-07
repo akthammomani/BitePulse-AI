@@ -1,8 +1,5 @@
-# toolchain
 build-essential
 pkg-config
-
-# FFmpeg runtime + headers required to build PyAV
 ffmpeg
 libavformat-dev
 libavcodec-dev
@@ -11,8 +8,6 @@ libavutil-dev
 libavfilter-dev
 libswscale-dev
 libswresample-dev
-
-# OpenCV deps
 libgl1
 libglib2.0-0
 libsm6
