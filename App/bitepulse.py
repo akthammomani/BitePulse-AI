@@ -424,6 +424,14 @@ st.set_page_config(
 
 st.title("BitePulse AI")
 st.caption("Real-time bite detection & eating pace insights.")
+
+# Custom CSS
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("style_v1.css")
+
 st.write("---")
 
 # Flexbox container for equal height boxes
@@ -569,6 +577,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
