@@ -49,9 +49,9 @@ All metrics are computed per session and update continuously:
 
 - **BPM** (`avg_bpm`)  
   Average Bites per Minute for the whole session:  
-  \[
+$
   \text{BPM} = \frac{\text{bites}}{\text{duration\_minutes}}
-  \]
+$
 
 - **Rolling BPM (30s)**  
   For each second \(t\), count bites in the last \(30\) seconds and scale to per-minute:  
