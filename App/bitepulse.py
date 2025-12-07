@@ -14,10 +14,32 @@ import plotly.express as px
 import plotly.graph_objects as go
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
 
-# Utils:
-OUT_W, OUT_H = 640, 640  
+# -------------------------------------------------------------------
+# Config: lower resolution for reliability; ICE (STUN/TURN) for Cloud
+# -------------------------------------------------------------------
+OUT_W, OUT_H = 640, 360   # was 640x640; 360p helps NATs/bandwidth on Cloud
 PAUSE_THRESHOLD_SEC = 10.0
 
+def build_rtc_config() -> dict:
+    """Build rtc_configuration for WebRTC (STUN always; TURN optional)."""
+    ice_servers = [
+        {"urls": [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:global.stun.twilio.com:3478",
+        ]},
+    ]
+    turn = st.secrets.get("turn", {})
+    urls = [u for u in [turn.get("url_1"), turn.get("url_2")] if u]
+    if urls and turn.get("username") and turn.get("credential"):
+        # Prefer relay when TURN is available (fixes corporate firewalls/NAT)
+        ice_servers.append({
+            "urls": urls,
+            "username": turn["username"],
+            "credential": turn["credential"],
+        })
+        return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
+    return {"iceServers": ice_servers}
 
 def _safe_rerun():
     if hasattr(st, "rerun"):
@@ -25,12 +47,14 @@ def _safe_rerun():
     elif hasattr(st, "experimental_rerun"):
         st.experimental_rerun()
 
-
 def draw_text_with_outline(img, text, x, y, font_scale, color, thickness=2):
+    # thicker black stroke for readability on compressed Cloud video
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness + 2)
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness)
 
-# Mediapipe setup:
+# -----------------
+# Mediapipe setup
+# -----------------
 mp_pose = mp.solutions.pose
 mp_face = mp.solutions.face_mesh
 POSE_LANDMARKS = mp_pose.PoseLandmark
@@ -79,7 +103,9 @@ def get_closest_hand(mouth_center, hand_dict):
         return None, None
     return min_dist, closest_label
 
-# Bite Session (logic unchanged):
+# --------------------------
+# Bite Session (unchanged)
+# --------------------------
 @dataclass
 class BiteSession:
     start_time: Optional[float] = None
@@ -110,7 +136,9 @@ class BiteSession:
     def intake_ratio(self) -> float:
         return (sum(self.intake_flags) / len(self.intake_flags)) if self.intake_flags else 0.0
 
-# Video Processor:
+# -------------------
+# Video Processor
+# -------------------
 class BitePulseProcessor(VideoProcessorBase):
     def __init__(self):
         self.pose = mp_pose.Pose(static_image_mode=False)
@@ -174,7 +202,6 @@ class BitePulseProcessor(VideoProcessorBase):
 
     def recv(self, frame: av.VideoFrame) -> av.VideoFrame:
         try:
-            # Detection logic:
             img = frame.to_ndarray(format="bgr24")
             h, w, _ = img.shape
             img = cv2.flip(img, 1)
@@ -219,7 +246,7 @@ class BitePulseProcessor(VideoProcessorBase):
             with self.lock:
                 self.summary = self._generate_summary()
 
-            # Visualization on fixed 640x480:
+            # Visualization on fixed OUT_W x OUT_H
             vis = cv2.resize(img, (OUT_W, OUT_H), interpolation=cv2.INTER_LINEAR)
             sx, sy = OUT_W / w, OUT_H / h
 
@@ -254,7 +281,9 @@ class BitePulseProcessor(VideoProcessorBase):
             print(f"Error in recv: {e}")
             return frame
 
-# Plotly Charts helpers:
+# --------------------------------
+# Plotly & analytics (unchanged)
+# --------------------------------
 def _rolling_bpm(bite_ts: List[float], duration_sec: float, window: float = 30.0) -> pd.DataFrame:
     if duration_sec <= 0:
         return pd.DataFrame(columns=["t", "bpm"])
@@ -293,24 +322,19 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
     df_roll = _rolling_bpm(bite_ts, duration_sec, window=30.0)
     df_intake = _intake_per_second(session.frame_times, session.intake_flags)
 
-    left_pct = int(summary["left_hand_pct"])
-    right_pct = int(summary["right_hand_pct"])
     bite_hands = summary.get("bite_hands", ["Unknown"] * len(bite_ts))
 
     tab1, tab2, tab3, tab4 = st.tabs(["Timeline", "Rolling BPM (30s)", "Intervals (IBI)", "Hands"])
 
-    # Timeline:
     with tab1:
         df_cum = df_bites.copy()
         fig = go.Figure()
-
         if not df_intake.empty:
             fig.add_trace(go.Scatter(
                 x=df_intake["sec"], y=df_intake["intake_ratio"],
                 mode="lines", fill="tozeroy", opacity=0.2, name="Intake ratio (per s)",
                 hovertemplate="t=%{x}s<br>intake=%{y:.2f}<extra></extra>",
             ))
-
         fig.add_trace(go.Scatter(
             x=df_cum["t"], y=df_cum["n"], mode="lines", name="Cumulative bites",
             hovertemplate="t=%{x:.1f}s<br>bites=%{y}<extra></extra>",
@@ -322,7 +346,6 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
         ))
         for x in pause_lines:
             fig.add_vline(x=x, line_width=1, line_dash="dot", opacity=0.6)
-
         x_max = max(bite_ts[-1], 5)
         y_max = max(df_bites["n"].max(), 2)
         fig.update_layout(
@@ -336,7 +359,6 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
         )
         st.plotly_chart(fig, use_container_width=True)
 
-    # Rolling BPM:
     with tab2:
         if df_roll.empty:
             st.write("Not enough data yet for rolling BPM.")
@@ -347,7 +369,6 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
             fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
             st.plotly_chart(fig, use_container_width=True)
 
-    # Intervals (IBI):
     with tab3:
         if ibi.size == 0:
             st.write("Need at least 2 bites for intervals.")
@@ -364,7 +385,6 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
             st.plotly_chart(fig, use_container_width=True)
             st.caption(f"Median IBI: **{median:.1f}s**, 75th pct: **{p75:.1f}s**. Dotted line = pause threshold ({PAUSE_THRESHOLD_SEC:.0f}s).")
 
-    # Hands:
     with tab4:
         df_h = pd.DataFrame({"t": bite_ts, "n": bites_idx, "hand": bite_hands})
         fig = px.scatter(df_h, x="t", y="n", color="hand",
@@ -372,12 +392,13 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
                          height=280)
         fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
         st.plotly_chart(fig, use_container_width=True)
-        #st.caption(f"Left/Right split: **{left_pct}% / {right_pct}%**.")
 
-# Streamlit UI:
+# ----------------
+# Streamlit UI
+# ----------------
 st.set_page_config(page_title="BitePulse AI", layout="wide")
 
-# KPI card styles:
+# KPI card styles
 st.markdown(
     """
     <style>
@@ -404,7 +425,7 @@ def _kpi(label: str, value: str, sub: Optional[str] = None):
         unsafe_allow_html=True,
     )
 
-# 40/60 layout:
+# 40/60 layout
 left_col, right_col = st.columns([4, 6])
 
 with left_col:
@@ -417,11 +438,12 @@ with left_col:
             "video": {
                 "width":  {"min": OUT_W, "ideal": OUT_W, "max": OUT_W},
                 "height": {"min": OUT_H, "ideal": OUT_H, "max": OUT_H},
-                "frameRate":{"min": 24, "ideal": 24, "max": 24},
-                "facingMode":"user",
+                "frameRate": {"min": 15, "ideal": 24, "max": 24},
+                "facingMode": "user",
             },
             "audio": False,
         },
+        rtc_configuration=build_rtc_config(),  # <<< IMPORTANT: STUN/TURN
         async_processing=True,
         video_html_attrs={
             "style": {
@@ -436,18 +458,15 @@ with left_col:
         },
     )
 
-    st.markdown("</div>", unsafe_allow_html=True)  
-
-    # Fallback: if some browsers don't stretch before play, keep the overall card tall.
+    # Fallback padding before play
     is_playing = getattr(getattr(webrtc_ctx, "state", None), "playing", False)
     if not is_playing:
         st.markdown(f"<div style='height:6px'></div>", unsafe_allow_html=True)
 
 with right_col:
-    st.subheader("Session Statistics")  
+    st.subheader("Session Statistics")
     right_placeholder = st.empty()
 
-    # Local KPI helper:
     def _kpi(label: str, value: str, sub: Optional[str] = None):
         sub_html = f'<div class="kpi-sub">{sub}</div>' if sub else ""
         st.markdown(
@@ -461,7 +480,6 @@ with right_col:
             unsafe_allow_html=True,
         )
 
-    # Right-side dashboard renderer:
     def render_dashboard(summary: Optional[Dict[str, Any]], session: Optional[BiteSession]):
         with right_placeholder.container():
             col_a, col_b = st.columns(2)
@@ -479,7 +497,6 @@ with right_col:
                 st.info("Waiting for data... Start the camera and eat to see stats.")
                 return
 
-            # KPIs (4 + 4)
             with col_a:
                 _kpi("Duration", summary['duration_str'])
                 _kpi("Bites", f"{summary['bites']}")
@@ -491,11 +508,10 @@ with right_col:
                 _kpi("1st/2nd BPM", f"{summary['first_half_bpm']:.1f}/{summary['second_half_bpm']:.1f}")
                 _kpi("L/R Hand", f"{int(summary['left_hand_pct'])}%/{int(summary['right_hand_pct'])}%")
 
-            # Charts
             st.markdown('<div class="section-subtitle">Charts</div>', unsafe_allow_html=True)
             render_bite_tabs(summary, session if session else BiteSession())
 
-# Data pump (read from processor):
+# Data pump (read from processor)
 vp = getattr(webrtc_ctx, "video_processor", None)
 summary = None
 session_ref = None
@@ -508,11 +524,13 @@ if "last_summary" not in st.session_state:
     st.session_state["last_summary"] = None
 
 summary_to_show = summary or st.session_state.get("last_summary")
-render_dashboard(summary_to_show, session_ref)
+# Render once per run
+with right_col:
+    render_dashboard(summary_to_show, session_ref)
 if summary:
     st.session_state["last_summary"] = summary
 
+# Gentle polling when playing
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
-
