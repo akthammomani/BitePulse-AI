@@ -17,7 +17,7 @@ from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
 # ---------------------------
 # Video/analysis parameters
 # ---------------------------
-OUT_W, OUT_H = 640, 360          # lower res => less bandwidth on Cloud
+OUT_W, OUT_H = 640, 640          # lower res => less bandwidth on Cloud
 PAUSE_THRESHOLD_SEC = 10.0
 
 # ---------------------------
@@ -472,7 +472,7 @@ with left_col:
         video_html_attrs={
             "style": {
                 "width": "100%",
-                "height": f"{DISPLAY_HEIGHT_PX}px", #"100%",
+                "height": "100%",#f"{DISPLAY_HEIGHT_PX}px", #"100%",
                 "objectFit": "contain",#"cover",
                 "border": "0",
                 "borderRadius": "10px"
@@ -561,5 +561,6 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
