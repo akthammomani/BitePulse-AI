@@ -25,60 +25,33 @@ PAUSE_THRESHOLD_SEC = 10.0
 # ---------------------------
 def build_rtc_config(force_turn: bool) -> dict:
     """
-    Build RTCPeerConnection configuration.
-
-    Priority order:
-      1) st.secrets["webrtc"]["iceServers"]  (paste your Metered list here)
-      2) Legacy [turn] block (url_1/url_2/username/credential)
-      3) Public STUN only (fallback)
-
-    If force_turn is True, we set iceTransportPolicy='relay' to prefer TURN.
+    STUN always; optional TURN via st.secrets['turn'].
+    If force_turn and TURN creds present -> iceTransportPolicy='relay'.
     """
-    # 1) Direct "iceServers" array from secrets (preferred)
-    ice_servers = None
-    try:
-        if "webrtc" in st.secrets and "iceServers" in st.secrets["webrtc"]:
-            val = st.secrets["webrtc"]["iceServers"]
-            # Streamlit returns TOML arrays as Python lists already.
-            if isinstance(val, list) and len(val) > 0:
-                ice_servers = val
-    except Exception:
-        pass
+    ice_servers = [
+        {"urls": [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:global.stun.twilio.com:3478",
+            "stun:stun.cloudflare.com:3478",
+        ]},
+    ]
+    turn = st.secrets.get("turn", {})
+    # You can store 2+ urls in secrets as url_1, url_2, ...
+    turn_urls = [u for u in [turn.get("url_1"), turn.get("url_2")] if u]
+    has_turn = bool(turn_urls and turn.get("username") and turn.get("credential"))
 
-    # 2) Legacy flat TURN secrets (optional)
-    if ice_servers is None and "turn" in st.secrets:
-        turn = st.secrets.get("turn", {})
-        turn_urls = [u for u in [turn.get("url_1"), turn.get("url_2")] if u]
-        if turn_urls and turn.get("username") and turn.get("credential"):
-            ice_servers = [
-                {"urls": [
-                    "stun:stun.l.google.com:19302",
-                    "stun:stun1.l.google.com:19302",
-                    "stun:stun.cloudflare.com:3478",
-                ]},
-                {
-                    "urls": turn_urls,
-                    "username": turn["username"],
-                    "credential": turn["credential"],
-                },
-            ]
+    if has_turn:
+        ice_servers.append({
+            "urls": turn_urls,
+            "username": turn["username"],
+            "credential": turn["credential"],
+        })
+        if force_turn:
+            # For strict NATs/firewalls: force relay over TURN (often via TCP/TLS :443)
+            return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
 
-    # 3) Final fallback: STUN only
-    if ice_servers is None:
-        ice_servers = [
-            {"urls": [
-                "stun:stun.l.google.com:19302",
-                "stun:stun1.l.google.com:19302",
-                "stun:stun.cloudflare.com:3478",
-            ]}
-        ]
-
-    cfg = {"iceServers": ice_servers}
-    if force_turn:
-        # relay = only use TURN candidates (best chance through strict firewalls)
-        cfg["iceTransportPolicy"] = "relay"
-    return cfg
-
+    return {"iceServers": ice_servers}
 
 def _safe_rerun():
     if hasattr(st, "rerun"):
@@ -86,9 +59,8 @@ def _safe_rerun():
     elif hasattr(st, "experimental_rerun"):
         st.experimental_rerun()
 
-
 def draw_text_with_outline(img, text, x, y, font_scale, color, thickness=2):
-    # Why: double stroke keeps text readable after WebRTC compression
+    # Double stroke keeps text readable after WebRTC compression
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness + 2)
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness)
 
@@ -144,7 +116,7 @@ def get_closest_hand(mouth_center, hand_dict):
     return min_dist, closest_label
 
 # ---------------------------
-# Bite session (unchanged)
+# Bite session
 # ---------------------------
 @dataclass
 class BiteSession:
@@ -365,26 +337,31 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
 
     tab1, tab2, tab3, tab4 = st.tabs(["Timeline", "Rolling BPM (30s)", "Intervals (IBI)", "Hands"])
 
+    # Timeline
     with tab1:
         df_cum = df_bites.copy()
         fig = go.Figure()
+
         if not df_intake.empty:
             fig.add_trace(go.Scatter(
                 x=df_intake["sec"], y=df_intake["intake_ratio"],
                 mode="lines", fill="tozeroy", opacity=0.2, name="Intake ratio (per s)",
-                hovertemplate="t=%{x}s<br>intake=%{y:.2f}<extra></extra>",
+                # IMPORTANT: braces escaped so Python never tries to format them
+                hovertemplate="t=%{{x}}s<br>intake=%{{y:.2f}}<extra></extra>",
             ))
+
         fig.add_trace(go.Scatter(
             x=df_cum["t"], y=df_cum["n"], mode="lines", name="Cumulative bites",
-            hovertemplate="t=%{x:.1f}s<br>bites=%{y}<extra></extra>",
+            hovertemplate="t=%{{x:.1f}}s<br>bites=%{{y}}<extra></extra>",
         ))
         fig.add_trace(go.Scatter(
             x=df_bites["t"], y=df_bites["n"], mode="markers", name="Bites",
-            marker=dict(size=10, line=dict(width=2, color="DarkSlateGrey")).
-            hovertemplate="t=%{x:.1f}s<br>#%{y}<extra></extra>",
+            marker=dict(size=10, line=dict(width=2, color="DarkSlateGrey")),
+            hovertemplate="t=%{{x:.1f}}s<br>#%{{y}}<extra></extra>",
         ))
         for x in pause_lines:
             fig.add_vline(x=x, line_width=1, line_dash="dot", opacity=0.6)
+
         x_max = max(bite_ts[-1], 5)
         y_max = max(df_bites["n"].max(), 2)
         fig.update_layout(
@@ -398,6 +375,7 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
         )
         st.plotly_chart(fig, use_container_width=True)
 
+    # Rolling BPM
     with tab2:
         if df_roll.empty:
             st.write("Not enough data yet for rolling BPM.")
@@ -408,6 +386,7 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
             fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
             st.plotly_chart(fig, use_container_width=True)
 
+    # Intervals (IBI)
     with tab3:
         if ibi.size == 0:
             st.write("Need at least 2 bites for intervals.")
@@ -424,6 +403,7 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
             st.plotly_chart(fig, use_container_width=True)
             st.caption(f"Median IBI: **{median:.1f}s**, 75th pct: **{p75:.1f}s**. Dotted line = pause threshold ({PAUSE_THRESHOLD_SEC:.0f}s).")
 
+    # Hands
     with tab4:
         df_h = pd.DataFrame({"t": bite_ts, "n": bites_idx, "hand": bite_hands})
         fig = px.scatter(df_h, x="t", y="n", color="hand",
@@ -450,17 +430,21 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Control: Force TURN (relay)
+# Sidebar: Force TURN (relay)
 with st.sidebar:
     st.subheader("Connection")
     force_turn = st.toggle(
         "Force TURN (relay only)",
         value=True,
-        help="Requires TURN credentials in Secrets. Fixes strict NAT/firewalls.",
+        help="Requires TURN credentials in Secrets. Fixes strict NAT/firewalls."
     )
     st.caption(
-        "Add ICE servers in Cloud → Settings → Secrets:\n\n"
-        "[webrtc]\niceServers = [ ... your Metered STUN/TURN entries ... ]"
+        "Add TURN creds in Cloud → Settings → Secrets:\n\n"
+        "[turn]\n"
+        "url_1 = \"turn:global.relay.metered.ca:80\"\n"
+        "url_2 = \"turns:global.relay.metered.ca:443?transport=tcp\"\n"
+        "username = \"YOUR_USER\"\n"
+        "credential = \"YOUR_PASS\""
     )
 
 # 40/60 layout
@@ -502,7 +486,7 @@ with left_col:
     conn_state = getattr(state, "connection_state", None)
     ice_state = getattr(state, "ice_connection_state", None)
     if ice_state in ("failed", "disconnected", "closed"):
-        st.error(f"ICE state: {ice_state}. Enable 'Force TURN' and ensure secrets are set.")
+        st.error(f"ICE state: {ice_state}. Enable 'Force TURN' and add TURN secrets.")
     elif ice_state in ("checking", "new"):
         st.warning(f"ICE state: {ice_state} (negotiating...)")
     elif ice_state == "connected":
