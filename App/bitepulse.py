@@ -426,6 +426,27 @@ st.title("BitePulse AI")
 st.caption("Real-time bite detection & eating pace insights.")
 st.write("---")
 
+# Flexbox container for equal height boxes
+st.markdown("""
+<div class="flex-container">
+    <div class="flex-item introduction">
+        <h2>Introduction</h2>
+        <p>The AI-Powered Heart Disease Risk Assessment App provides users with tailored risk scores and actionable recommendations to help mitigate their heart disease risk. Using advanced AI and modeling techniques, this app offers easy-to-understand assessments and preventive measures to make safeguarding your cardiovascular health straightforward and accessible.</p>
+    </div>
+    <div class="flex-item how-it-works">
+        <h2>How it works</h2>
+        <ul>
+            <li><strong>User Input:</strong> Enter your health information, such as age, BMI, physical activity levels, smoking status, and medical history (e.g., heart attacks, strokes, diabetes).</li>
+            <li><strong>Data Analysis:</strong> The app analyzes your input using advanced AI models specifically designed for heart disease risk prediction.</li>
+            <li><strong>Risk Assessment:</strong> Receive a personalized risk score indicating your potential for heart disease.</li>
+            <li><strong>Recommendations:</strong> Get actionable advice to mitigate your risk, including lifestyle modification suggestions.</li>
+        </ul>
+    </div>
+</div>
+""", unsafe_allow_html=True)
+
+st.write('---')
+
 st.markdown(
     """
     <style>
@@ -548,6 +569,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
