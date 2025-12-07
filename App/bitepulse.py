@@ -578,6 +578,36 @@ if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
 
+st.write('---')
+
+null9_0, row9_1, row9_2 = st.columns((0.02, 5, 0.05))
+with row9_1.expander("Leave Us a Comment or Question"):
+    contact_form = """
+        <form action=https://formsubmit.co/aktham.momani81@gmail.com method="POST">
+            <input type="hidden" name="_captcha" value="false">
+            <input type="text" name="name" placeholder="Your name" required>
+            <input type="email" name="email" placeholder="Your email" required>
+            <textarea name="message" placeholder="Your message here"></textarea>
+            <button type="submit">Send</button>
+        </form>
+    """
+    st.markdown(contact_form, unsafe_allow_html=True)
+
+    # Use Local CSS File
+    local_css("style.css")
+
+null10_0, row10_1, row10_2 = st.columns((0.04, 7, 0.4))
+with row10_1:
+    st.write("""
+        ### Contacts
+        [![](https://img.shields.io/badge/GitHub-Follow-informational)](https://github.com/akthammomani)
+        [![](https://img.shields.io/badge/Linkedin-Connect-informational)](https://www.linkedin.com/in/akthammomani/)
+        [![](https://img.shields.io/badge/Open-Issue-informational)](https://github.com/akthammomani/AI_powered_heart_disease_risk_assessment_app/issues)
+        [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
+        ###### © Aktham Momani, 2024. All rights reserved.
+    """)
+
+
 
 
 
