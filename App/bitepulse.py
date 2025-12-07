@@ -439,34 +439,20 @@ st.markdown("""
 <div class="flex-container">
     <div class="flex-item introduction">
         <h2>Introduction</h2>
-        <p>The AI-Powered Heart Disease Risk Assessment App provides users with tailored risk scores and actionable recommendations to help mitigate their heart disease risk. Using advanced AI and modeling techniques, this app offers easy-to-understand assessments and preventive measures to make safeguarding your cardiovascular health straightforward and accessible.</p>
+        <p><strong>BitePulse AI</strong> is your privacy-respecting, real-time eating coach. Research shows that eating too quickly can disrupt your body's natural fullness signals (which take ~20 minutes to register), leading to overeating and digestive discomfort.</p>
+        <p>By simply monitoring your rhythm, this tool helps you practice <strong>Mindful Eating</strong>—a habit proven to improve digestion, reduce stress, and enhance meal satisfaction.</p>
     </div>
     <div class="flex-item how-it-works">
         <h2>How it works</h2>
         <ul>
-            <li><strong>User Input:</strong> Enter your health information, such as age, BMI, physical activity levels, smoking status, and medical history (e.g., heart attacks, strokes, diabetes).</li>
-            <li><strong>Data Analysis:</strong> The app analyzes your input using advanced AI models specifically designed for heart disease risk prediction.</li>
-            <li><strong>Risk Assessment:</strong> Receive a personalized risk score indicating your potential for heart disease.</li>
-            <li><strong>Recommendations:</strong> Get actionable advice to mitigate your risk, including lifestyle modification suggestions.</li>
+            <li><strong>Passive Monitoring:</strong> Unlike manual food logs, this app uses <em>Computer Vision</em> to automatically detect "intake gestures" (hand-to-mouth movements) without recording your face or saving video data.</li>
+            <li><strong>Real-Time Analysis:</strong> It tracks the timing between bites to calculate your current <em>Bites Per Minute (BPM)</em> and identify pauses.</li>
+            <li><strong>Immediate Feedback:</strong> You get a live "Pace" label (e.g., <em>Fast, Typical, Slow</em>) to help you adjust your speed in the moment, acting as a gentle nudge toward healthier habits.</li>
         </ul>
     </div>
 </div>
 """, unsafe_allow_html=True)
 
-st.write('---')
-
-st.markdown(
-    """
-    <style>
-      .kpi-card {border:1px solid rgba(0,0,0,.08);border-radius:12px;padding:10px 12px;background:rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(0,0,0,.04);}
-      .kpi-label {font-size:11px;font-weight:700;color:#6b7280;margin:0 0 6px 0;letter-spacing:.2px;}
-      .kpi-value {font-size:16px;font-weight:800;color:#111827;margin:0;}
-      .kpi-sub {font-size:12px;color:#6b7280;font-weight:600;margin-top:2px;}
-      .section-subtitle {font-weight:700;font-size:14px;margin:6px 0 8px 0;}
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
 force_turn = True 
 cfg = build_rtc_config(force_turn)
 # 40/60 layout
@@ -607,6 +593,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
