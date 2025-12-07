@@ -23,27 +23,53 @@ PAUSE_THRESHOLD_SEC = 10.0
 # ---------------------------
 # ICE config (STUN + TURN)
 # ---------------------------
+# ---------------------------
+# ICE config (STUN + TURN)
+# ---------------------------
 def build_rtc_config(force_turn: bool) -> dict:
-    # Always include at least one public STUN (harmless if we force relay)
-    ice_servers = [{"urls": ["stun:stun.l.google.com:19302"]}]
+    """
+    If force_turn=True:
+      - ONLY use TCP/TLS TURN (no STUN, no UDP) and set policy 'relay'
+    Else:
+      - fall back to public STUN, and include your TURN if present
+    """
+    turn = st.secrets.get("turn", {})
 
-    t = st.secrets.get("turn", {})
-    turn_urls = [t.get("url_1")]  # we keep exactly one: turns:...:443?transport=tcp
-    turn_urls = [u for u in turn_urls if u]
+    # Prefer TCP-only TURN to survive locked-down environments
+    tcp_turn_urls = [u for u in [
+        turn.get("url_tcp1"),  # e.g. "turn:global.relay.metered.ca:80?transport=tcp"
+        turn.get("url_tcp2"),  # e.g. "turns:global.relay.metered.ca:443?transport=tcp"
+    ] if u]
 
-    if turn_urls and t.get("username") and t.get("credential"):
+    has_turn = bool(tcp_turn_urls and turn.get("username") and turn.get("credential"))
+
+    if force_turn and has_turn:
+        # RELAY-ONLY and TCP/TLS only. No STUN, no UDP.
+        return {
+            "iceServers": [{
+                "urls": tcp_turn_urls,
+                "username": turn["username"],
+                "credential": turn["credential"],
+            }],
+            "iceTransportPolicy": "relay",
+        }
+
+    # Non-forced: allow STUN and (optionally) TURN
+    ice_servers = [
+        {"urls": [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:stun.cloudflare.com:3478",
+        ]},
+    ]
+    if has_turn:
         ice_servers.append({
-            "urls": turn_urls,
-            "username": t["username"],
-            "credential": t["credential"],
+            "urls": tcp_turn_urls,
+            "username": turn["username"],
+            "credential": turn["credential"],
         })
-        if force_turn:
-            # Force browser to use only TURN (relay) candidates.
-            return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
-
-    if force_turn:
-        st.sidebar.error("Force TURN is ON, but TURN creds were not loaded from Secrets.")
     return {"iceServers": ice_servers}
+
 
 
 
@@ -427,28 +453,22 @@ st.markdown(
 # Sidebar: Force TURN (relay)
 with st.sidebar:
     st.subheader("Connection")
-
-    # Toggle to control whether we force relay-only (TURN)
-    force_turn = st.toggle(
-        "Force TURN (relay only)",
-        value=True,
-        help="Requires TURN credentials in Secrets. Fixes strict NAT/firewalls."
-    )
-
-    # DEBUG: show whether TURN creds loaded and which policy is active
+    force_turn = st.toggle("Force TURN (relay only)", value=True,
+                           help="Keeps only TCP/TLS TURN (443/80). Fixes strict NAT/firewalls.")
     cfg = build_rtc_config(force_turn)
     has_turn = any(isinstance(s, dict) and "username" in s for s in cfg.get("iceServers", []))
     st.caption(f"TURN loaded: {'yes' if has_turn else 'no'}")
     st.caption(f"Policy: {cfg.get('iceTransportPolicy', 'all')}")
 
-    # Copy-paste guide for Secrets
     st.caption(
-        "Add TURN creds in Cloud → Settings → Secrets (TOML):\n\n"
+        "Secrets format (TOML):\n\n"
         "[turn]\n"
-        "url_1 = \"turns:global.relay.metered.ca:443?transport=tcp\"\n"
-        "username = \"YOUR_USER\"\n"
-        "credential = \"YOUR_PASS\""
+        "url_tcp1   = \"turn:global.relay.metered.ca:80?transport=tcp\"\n"
+        "url_tcp2   = \"turns:global.relay.metered.ca:443?transport=tcp\"\n"
+        "username   = \"<paste-from-Metered>\"\n"
+        "credential = \"<paste-from-Metered>\""
     )
+
 
 
 # 40/60 layout
@@ -565,6 +585,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
