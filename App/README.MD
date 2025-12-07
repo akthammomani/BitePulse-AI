@@ -54,15 +54,11 @@ All metrics are computed per session and update continuously:
   Where $B$ is the total number of detected bites and $T$ is session duration in seconds.
 
 - **Rolling BPM (30s)** For each second $t$, count bites in the last 30 seconds and scale to per-minute:  
-  $$
-  \mathrm{rolling\_bpm}(t) = \frac{\#\{\,b_i \mid t-30 < b_i \le t\,\}}{30/60} = 2 \cdot \#\{\,b_i \mid t-30 < b_i \le t\,\}
-  $$
+  $$\mathrm{rolling\_bpm}(t) = \frac{\#\{\,b_i \mid t-30 < b_i \le t\,\}}{30/60} = 2 \cdot \#\{\,b_i \mid t-30 < b_i \le t\,\}$$
   Here $b_i$ are bite timestamps in seconds.
 
 - **% Intake (`intake_pct`)** Share of frames flagged as “intake”:  
-  $$
-  \%\,\mathrm{intake} = 100 \times \frac{\sum_{k=1}^{N}\mathrm{intake\_flag}_k}{N}
-  $$
+  $$\%\,\mathrm{intake} = 100 \times \frac{\sum_{k=1}^{N}\mathrm{intake\_flag}_k}{N}$$
   Where $\mathrm{intake\_flag}_k \in \{0,1\}$ for frame $k$ and $N$ is the number of frames.
 
 - **Pauses** (`pause_count`)  
