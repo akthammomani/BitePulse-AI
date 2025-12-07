@@ -17,30 +17,41 @@ from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
 # ---------------------------
 # Video/analysis parameters
 # ---------------------------
-OUT_W, OUT_H = 640, 360            # lower res = less bandwidth, more reliable on Cloud
+OUT_W, OUT_H = 640, 360            # keep modest bandwidth
 PAUSE_THRESHOLD_SEC = 10.0
 
 # ---------------------------
-# ICE config (STUN + TURN)
+# TURN / ICE helpers
 # ---------------------------
+def _turn_from_secrets() -> Dict[str, Optional[str]]:
+    """
+    Accept BOTH naming styles:
+      - url_tls/url_tcp  (recommended)
+      - url_tcp1/url_tcp2 (earlier code)
+    """
+    t = st.secrets.get("turn", {})
+    url_tls = t.get("url_tls") or t.get("url_tcp2")
+    url_tcp = t.get("url_tcp") or t.get("url_tcp1")
+    username = t.get("username")
+    credential = t.get("credential")
+    urls = [u for u in [url_tls, url_tcp] if u]
+    return {
+        "urls": urls,
+        "username": username,
+        "credential": credential,
+    }
+
 def build_rtc_config(force_turn: bool) -> dict:
     """
-    Reads TURN settings from secrets:
-      [turn]
-      url_tcp1   = "turn:global.relay.metered.ca:80?transport=tcp"
-      url_tcp2   = "turns:global.relay.metered.ca:443?transport=tcp"
-      username   = "<from Metered>"
-      credential = "<from Metered>"
-
-    If force_turn=True and creds exist, we return TURN-only and set iceTransportPolicy='relay'.
-    Otherwise we return STUN + (optional) TURN.
+    If force_turn=True and TURN creds exist, return TURN-only and set iceTransportPolicy='relay'.
+    Otherwise return STUN + optional TURN.
     """
-    turn = st.secrets.get("turn", {})
-    # Prefer TLS 443 first (more likely to work on locked-down networks)
-    urls = [u for u in [turn.get("url_tcp2"), turn.get("url_tcp1")] if u]
-    has_turn = bool(urls and turn.get("username") and turn.get("credential"))
+    turn = _turn_from_secrets()
+    urls = turn["urls"]
+    has_turn = bool(urls and turn["username"] and turn["credential"])
 
     if force_turn and has_turn:
+        # TURN only (relay) — best chance on Streamlit Cloud / locked-down networks
         return {
             "iceServers": [{
                 "urls": urls,
@@ -50,6 +61,7 @@ def build_rtc_config(force_turn: bool) -> dict:
             "iceTransportPolicy": "relay",
         }
 
+    # STUN + (optional) TURN
     ice_servers = [{
         "urls": [
             "stun:stun.l.google.com:19302",
@@ -358,7 +370,6 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
             fig.add_trace(go.Scatter(
                 x=df_intake["sec"], y=df_intake["intake_ratio"],
                 mode="lines", fill="tozeroy", opacity=0.2, name="Intake ratio (per s)",
-                # Escaped braces so Python doesn't try to format the string
                 hovertemplate="t=%{{x}}s<br>intake=%{{y:.2f}}<extra></extra>",
             ))
 
@@ -442,14 +453,24 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Sidebar: Force TURN (relay)
+# Sidebar: Force TURN (relay) + diagnostics
 with st.sidebar:
     st.subheader("Connection")
     force_turn = st.toggle("Force TURN (relay only)", value=True)
     cfg = build_rtc_config(force_turn)
-    has_turn = any(isinstance(s, dict) and "username" in s for s in cfg.get("iceServers", []))
+    ice_servers = cfg.get("iceServers", [])
+    has_turn = any(isinstance(s, dict) and "username" in s for s in ice_servers)
     st.caption(f"TURN loaded: {'yes' if has_turn else 'no'}")
     st.caption(f"Policy: {cfg.get('iceTransportPolicy', 'all')}")
+
+    with st.expander("TURN diagnostics"):
+        turn_raw = st.secrets.get("turn", {})
+        st.write("Secrets present:", bool(turn_raw))
+        st.write("url keys found:", [k for k in turn_raw.keys() if k.startswith("url")])
+        st.write("username present:", bool(turn_raw.get("username")))
+        st.write("credential present:", bool(turn_raw.get("credential")))
+        if ice_servers:
+            st.write("rtc_configuration.iceServers:", ice_servers)
 
 # 40/60 layout
 left_col, right_col = st.columns([4, 6])
@@ -461,15 +482,8 @@ with left_col:
         key="bitepulse-live-intake",
         mode=WebRtcMode.SENDRECV,
         video_processor_factory=BitePulseProcessor,
-        media_stream_constraints={
-            "video": {
-                "width":  {"min": OUT_W, "ideal": OUT_W, "max": OUT_W},
-                "height": {"min": OUT_H, "ideal": OUT_H, "max": OUT_H},
-                "frameRate": {"min": 15, "ideal": 24, "max": 24},
-                "facingMode": "user",
-            },
-            "audio": False,
-        },
+        # Keep constraints simple to avoid constraint negotiation failures
+        media_stream_constraints={"video": True, "audio": False},
         rtc_configuration=cfg,  # use the one we just built
         async_processing=True,
         video_html_attrs={
@@ -489,7 +503,7 @@ with left_col:
     state = getattr(webrtc_ctx, "state", None)
     ice_state = getattr(state, "ice_connection_state", None)
     if ice_state in ("failed", "disconnected", "closed"):
-        st.error(f"ICE state: {ice_state}. If this persists, keep 'Force TURN' on and verify TURN secrets.")
+        st.error(f"ICE state: {ice_state}. If this persists, keep 'Force TURN' ON and verify TURN secrets.")
     elif ice_state in ("checking", "new"):
         st.warning(f"ICE state: {ice_state} (negotiating...)")
     elif ice_state == "connected":
