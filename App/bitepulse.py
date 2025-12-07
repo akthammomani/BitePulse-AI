@@ -24,34 +24,31 @@ PAUSE_THRESHOLD_SEC = 10.0
 # ICE config (STUN + TURN)
 # ---------------------------
 def build_rtc_config(force_turn: bool) -> dict:
-    """
-    STUN always; optional TURN via st.secrets['turn'].
-    If force_turn and TURN creds present -> iceTransportPolicy='relay'.
-    """
-    ice_servers = [
-        {"urls": [
-            "stun:stun.l.google.com:19302",
-            "stun:stun1.l.google.com:19302",
-            "stun:global.stun.twilio.com:3478",
-            "stun:stun.cloudflare.com:3478",
-        ]},
+    # Always offer a public STUN too (harmless if we force relay)
+    stun_pool = [
+        "stun:stun.relay.metered.ca:80",
+        "stun:stun.l.google.com:19302",
     ]
-    turn = st.secrets.get("turn", {})
-    # You can store 2+ urls in secrets as url_1, url_2, ...
-    turn_urls = [u for u in [turn.get("url_1"), turn.get("url_2")] if u]
-    has_turn = bool(turn_urls and turn.get("username") and turn.get("credential"))
+    ice_servers = [{"urls": stun_pool}]
 
-    if has_turn:
+    t = st.secrets.get("turn", {})
+    turn_urls = [t.get(f"url_{i}") for i in range(1, 5)]
+    turn_urls = [u for u in turn_urls if u]  # drop Nones
+
+    if turn_urls and t.get("username") and t.get("credential"):
         ice_servers.append({
             "urls": turn_urls,
-            "username": turn["username"],
-            "credential": turn["credential"],
+            "username": t["username"],
+            "credential": t["credential"],
         })
         if force_turn:
-            # For strict NATs/firewalls: force relay over TURN (often via TCP/TLS :443)
             return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
 
+    # If TURN is missing but user forced relay, warn in UI
+    if force_turn:
+        st.sidebar.error("Force TURN is ON but TURN credentials were not loaded from Secrets.")
     return {"iceServers": ice_servers}
+
 
 def _safe_rerun():
     if hasattr(st, "rerun"):
@@ -561,3 +558,4 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
