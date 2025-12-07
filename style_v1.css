@@ -30,7 +30,7 @@ button[type=submit]:hover {
 }
 
 .flex-item {
-    background-color: #FAEBD7 !important; /* Background color */
+    background-color: #FCF3E7 !important; /* Background color #FAEBD7 */
     color: black; /* Black text color */
     padding: 20px; /* Some padding */
     border-radius: 15px; /* Rounded borders */
