@@ -49,7 +49,7 @@ All metrics are computed per session and update continuously:
 
 - **BPM (session average)** Bites per minute over the whole session:  
   $$
-  \mathrm{BPM} = \frac{B}{T/60} = 60 \times \frac{B}{T}
+  mathrm{BPM} = \frac{B}{T/60} = 60 \times \frac{B}{T}
   $$
   Where $B$ is the total number of detected bites and $T$ is session duration in seconds.
 
