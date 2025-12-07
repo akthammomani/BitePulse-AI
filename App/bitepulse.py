@@ -1,5 +1,5 @@
 # app/bitepulse_app.py
-
+import streamlit as st
 import time
 import threading
 from dataclasses import dataclass, field
@@ -12,7 +12,6 @@ import pandas as pd
 import mediapipe as mp
 import plotly.express as px
 import plotly.graph_objects as go
-import streamlit as st
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
 
 # Utils:
@@ -516,3 +515,4 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
