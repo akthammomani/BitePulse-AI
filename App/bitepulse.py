@@ -594,7 +594,7 @@ with row9_1.expander("Leave Us a Comment or Question"):
     st.markdown(contact_form, unsafe_allow_html=True)
 
     # Use Local CSS File
-    local_css("style.css")
+    local_css("style_v1.css")
     
 st.write('---')
 null10_0, row10_1, row10_2 = st.columns((0.04, 7, 0.4))
@@ -607,6 +607,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2024. All rights reserved.
     """)
+
 
 
 
