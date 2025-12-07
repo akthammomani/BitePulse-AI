@@ -26,30 +26,50 @@ PAUSE_THRESHOLD_SEC = 10.0
 # ---------------------------
 # ICE config (STUN + TURN)
 # ---------------------------
+# ---- ICE config (STUN + TURN) ----
 def build_rtc_config(force_turn: bool) -> dict:
-    # Always include a couple STUNs; they don’t hurt when policy='relay'
-    ice_servers = [
-        {"urls": [
+    """
+    STUN only if we're NOT forcing TURN. When force_turn=True we send only TURN over TCP/TLS
+    and set iceTransportPolicy='relay' (browser side).
+    """
+    turn = st.secrets.get("turn", {})
+    # allow 1–4 TURN URLs, we’ll prefer TLS 443 first
+    turn_urls = [u for u in [
+        turn.get("url_tls"),   # e.g. "turns:global.relay.metered.ca:443?transport=tcp"
+        turn.get("url_tcp"),   # e.g. "turn:global.relay.metered.ca:80?transport=tcp"
+        turn.get("url_3"),
+        turn.get("url_4"),
+    ] if u]
+
+    has_turn = bool(turn_urls and turn.get("username") and turn.get("credential"))
+
+    if force_turn and has_turn:
+        # TURN ONLY (relay)
+        return {
+            "iceServers": [{
+                "urls": turn_urls,
+                "username": turn["username"],
+                "credential": turn["credential"],
+            }],
+            "iceTransportPolicy": "relay",
+        }
+
+    # Otherwise: STUN + (optional) TURN
+    ice_servers = [{
+        "urls": [
             "stun:stun.l.google.com:19302",
             "stun:stun1.l.google.com:19302",
-        ]},
-    ]
-
-    t = st.secrets.get("turn", {})
-    turn_urls = [u for u in (t.get("url_tcp1"), t.get("url_tcp2")) if u]
-    has_turn = bool(turn_urls and t.get("username") and t.get("credential"))
-
+            "stun:stun.cloudflare.com:3478",
+        ]
+    }]
     if has_turn:
         ice_servers.append({
             "urls": turn_urls,
-            "username": t["username"],
-            "credential": t["credential"],
+            "username": turn["username"],
+            "credential": turn["credential"],
         })
-
-    # Force relay only when the sidebar toggle is on and TURN is present.
-    if force_turn and has_turn:
-        return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
     return {"iceServers": ice_servers}
+
 
 def _safe_rerun():
     if hasattr(st, "rerun"):
@@ -433,14 +453,8 @@ with st.sidebar:
     st.subheader("Connection")
     force_turn = st.toggle("Force TURN (relay only)", value=True)
     cfg = build_rtc_config(force_turn)
-
-    has_turn_loaded = any(
-        isinstance(s, dict)
-        and any(isinstance(s.get("urls"), list) and ("turn:" in u or "turns:" in u) for u in [*s.get("urls", [])])
-        and ("username" in s) and ("credential" in s)
-        for s in cfg.get("iceServers", [])
-    )
-    st.caption(f"TURN loaded: {'yes' if has_turn_loaded else 'no'}")
+    has_turn = any(isinstance(s, dict) and "username" in s for s in cfg.get("iceServers", []))
+    st.caption(f"TURN loaded: {'yes' if has_turn else 'no'}")
     st.caption(f"Policy: {cfg.get('iceTransportPolicy', 'all')}")
 
 
@@ -560,6 +574,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
