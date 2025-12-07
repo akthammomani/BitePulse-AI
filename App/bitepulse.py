@@ -24,16 +24,12 @@ PAUSE_THRESHOLD_SEC = 10.0
 # ICE config (STUN + TURN)
 # ---------------------------
 def build_rtc_config(force_turn: bool) -> dict:
-    # Always offer a public STUN too (harmless if we force relay)
-    stun_pool = [
-        "stun:stun.relay.metered.ca:80",
-        "stun:stun.l.google.com:19302",
-    ]
-    ice_servers = [{"urls": stun_pool}]
+    # Always include at least one public STUN (harmless if we force relay)
+    ice_servers = [{"urls": ["stun:stun.l.google.com:19302"]}]
 
     t = st.secrets.get("turn", {})
-    turn_urls = [t.get(f"url_{i}") for i in range(1, 5)]
-    turn_urls = [u for u in turn_urls if u]  # drop Nones
+    turn_urls = [t.get("url_1")]  # we keep exactly one: turns:...:443?transport=tcp
+    turn_urls = [u for u in turn_urls if u]
 
     if turn_urls and t.get("username") and t.get("credential"):
         ice_servers.append({
@@ -42,12 +38,13 @@ def build_rtc_config(force_turn: bool) -> dict:
             "credential": t["credential"],
         })
         if force_turn:
+            # Force browser to use only TURN (relay) candidates.
             return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
 
-    # If TURN is missing but user forced relay, warn in UI
     if force_turn:
-        st.sidebar.error("Force TURN is ON but TURN credentials were not loaded from Secrets.")
+        st.sidebar.error("Force TURN is ON, but TURN creds were not loaded from Secrets.")
     return {"iceServers": ice_servers}
+
 
 
 def _safe_rerun():
@@ -558,4 +555,5 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
