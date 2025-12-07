@@ -417,7 +417,10 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
 # ---------------------------
 # Streamlit UI
 # ---------------------------
-st.set_page_config(page_title="BitePulse AI", layout="wide")
+st.set_page_config(
+    page_title="BitePulse AI", 
+    layout="wide", 
+    initial_sidebar_state="collapsed")
 
 st.markdown(
     """
@@ -431,12 +434,11 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
-
-
-
+force_turn = True 
+cfg = build_rtc_config(force_turn)
 # 40/60 layout
 left_col, right_col = st.columns([4, 6])
-DISPLAY_HEIGHT_PX = 540
+
 with left_col:
     st.subheader("Live Analysis")
 
@@ -542,6 +544,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
