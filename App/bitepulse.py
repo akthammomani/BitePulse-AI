@@ -432,26 +432,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Sidebar: Force TURN (relay) + diagnostics
-with st.sidebar:
-    st.subheader("Connection")
-    force_turn = st.toggle("Force TURN (relay only)", value=True)
-    cfg = build_rtc_config(force_turn)
 
-    # Tiny diagnostics (does not reveal credential value)
-    turn = st.secrets.get("turn", {})
-    has_turn = bool(turn.get("username") and turn.get("credential") and (turn.get("url_tcp1") or turn.get("url_tcp2")))
-    st.caption(f"TURN loaded: {'yes' if has_turn else 'no'}")
-    st.caption(f"Policy: {cfg.get('iceTransportPolicy', 'all')}")
-    with st.expander("Show rtcConfiguration sent to the browser"):
-        safe_cfg = []
-        for s in cfg.get("iceServers", []):
-            safe_cfg.append({
-                "urls": s.get("urls"),
-                "username_present": bool(s.get("username")),
-                "credential_present": bool(s.get("credential")),
-            })
-        st.json({"iceServers": safe_cfg, "iceTransportPolicy": cfg.get("iceTransportPolicy", "all")})
 
 # 40/60 layout
 left_col, right_col = st.columns([4, 6])
@@ -561,6 +542,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
