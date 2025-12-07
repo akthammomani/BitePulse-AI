@@ -422,6 +422,9 @@ st.set_page_config(
     layout="wide", 
     initial_sidebar_state="collapsed")
 
+st.title("BitePulse AI")
+st.caption("Real-time bite detection & eating pace insights.")
+
 st.markdown(
     """
     <style>
@@ -544,6 +547,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
