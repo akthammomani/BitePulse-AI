@@ -48,9 +48,9 @@ All metrics are computed per session and update continuously:
   Count of detected bite events.
 
 - **BPM (session average)** Bites per minute over the whole session:  
-  $$
-  mathrm{BPM} = \frac{B}{T/60} = 60 \times \frac{B}{T}
-  $$
+
+  $$mathrm{BPM} = \frac{B}{T/60} = 60 \times \frac{B}{T}$$
+
   Where $B$ is the total number of detected bites and $T$ is session duration in seconds.
 
 - **Rolling BPM (30s)** For each second $t$, count bites in the last 30 seconds and scale to per-minute:  
