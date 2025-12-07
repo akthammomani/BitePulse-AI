@@ -14,31 +14,42 @@ import plotly.express as px
 import plotly.graph_objects as go
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
 
-# -------------------------------------------------------------------
-# Config: lower resolution for reliability; ICE (STUN/TURN) for Cloud
-# -------------------------------------------------------------------
-OUT_W, OUT_H = 640, 360   # was 640x640; 360p helps NATs/bandwidth on Cloud
+# ---------------------------
+# Video/analysis parameters
+# ---------------------------
+OUT_W, OUT_H = 640, 360            # lower res = less bandwidth, more reliable on Cloud
 PAUSE_THRESHOLD_SEC = 10.0
 
-def build_rtc_config() -> dict:
-    """Build rtc_configuration for WebRTC (STUN always; TURN optional)."""
+# ---------------------------
+# ICE config (STUN + TURN)
+# ---------------------------
+def build_rtc_config(force_turn: bool) -> dict:
+    """
+    STUN always; TURN optional via st.secrets['turn'].
+    If force_turn and TURN creds present -> iceTransportPolicy='relay'.
+    """
     ice_servers = [
         {"urls": [
             "stun:stun.l.google.com:19302",
             "stun:stun1.l.google.com:19302",
             "stun:global.stun.twilio.com:3478",
+            "stun:stun.cloudflare.com:3478",
         ]},
     ]
     turn = st.secrets.get("turn", {})
-    urls = [u for u in [turn.get("url_1"), turn.get("url_2")] if u]
-    if urls and turn.get("username") and turn.get("credential"):
-        # Prefer relay when TURN is available (fixes corporate firewalls/NAT)
+    turn_urls = [u for u in [turn.get("url_1"), turn.get("url_2")] if u]
+    has_turn = bool(turn_urls and turn.get("username") and turn.get("credential"))
+
+    if has_turn:
         ice_servers.append({
-            "urls": urls,
+            "urls": turn_urls,
             "username": turn["username"],
             "credential": turn["credential"],
         })
-        return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
+        if force_turn:
+            # Why: corporate firewalls often block UDP; forcing relay uses TURN over TCP/TLS 443
+            return {"iceServers": ice_servers, "iceTransportPolicy": "relay"}
+
     return {"iceServers": ice_servers}
 
 def _safe_rerun():
@@ -48,13 +59,13 @@ def _safe_rerun():
         st.experimental_rerun()
 
 def draw_text_with_outline(img, text, x, y, font_scale, color, thickness=2):
-    # thicker black stroke for readability on compressed Cloud video
+    # Why: double stroke keeps text readable after WebRTC compression
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, (0, 0, 0), thickness + 2)
     cv2.putText(img, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, font_scale, color, thickness)
 
-# -----------------
+# ---------------------------
 # Mediapipe setup
-# -----------------
+# ---------------------------
 mp_pose = mp.solutions.pose
 mp_face = mp.solutions.face_mesh
 POSE_LANDMARKS = mp_pose.PoseLandmark
@@ -103,9 +114,9 @@ def get_closest_hand(mouth_center, hand_dict):
         return None, None
     return min_dist, closest_label
 
-# --------------------------
-# Bite Session (unchanged)
-# --------------------------
+# ---------------------------
+# Bite session (unchanged)
+# ---------------------------
 @dataclass
 class BiteSession:
     start_time: Optional[float] = None
@@ -136,9 +147,9 @@ class BiteSession:
     def intake_ratio(self) -> float:
         return (sum(self.intake_flags) / len(self.intake_flags)) if self.intake_flags else 0.0
 
-# -------------------
-# Video Processor
-# -------------------
+# ---------------------------
+# Video processor
+# ---------------------------
 class BitePulseProcessor(VideoProcessorBase):
     def __init__(self):
         self.pose = mp_pose.Pose(static_image_mode=False)
@@ -246,7 +257,6 @@ class BitePulseProcessor(VideoProcessorBase):
             with self.lock:
                 self.summary = self._generate_summary()
 
-            # Visualization on fixed OUT_W x OUT_H
             vis = cv2.resize(img, (OUT_W, OUT_H), interpolation=cv2.INTER_LINEAR)
             sx, sy = OUT_W / w, OUT_H / h
 
@@ -281,9 +291,9 @@ class BitePulseProcessor(VideoProcessorBase):
             print(f"Error in recv: {e}")
             return frame
 
-# --------------------------------
-# Plotly & analytics (unchanged)
-# --------------------------------
+# ---------------------------
+# Plotly helpers
+# ---------------------------
 def _rolling_bpm(bite_ts: List[float], duration_sec: float, window: float = 30.0) -> pd.DataFrame:
     if duration_sec <= 0:
         return pd.DataFrame(columns=["t", "bpm"])
@@ -393,12 +403,11 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
         fig.update_layout(margin=dict(l=10, r=10, t=10, b=10))
         st.plotly_chart(fig, use_container_width=True)
 
-# ----------------
+# ---------------------------
 # Streamlit UI
-# ----------------
+# ---------------------------
 st.set_page_config(page_title="BitePulse AI", layout="wide")
 
-# KPI card styles
 st.markdown(
     """
     <style>
@@ -412,24 +421,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-def _kpi(label: str, value: str, sub: Optional[str] = None):
-    sub_html = f'<div class="kpi-sub">{sub}</div>' if sub else ""
-    st.markdown(
-        f"""
-        <div class="kpi-card">
-          <div class="kpi-label">{label}</div>
-          <div class="kpi-value">{value}</div>
-          {sub_html}
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+# Control: Force TURN (relay)
+with st.sidebar:
+    st.subheader("Connection")
+    force_turn = st.toggle("Force TURN (relay only)", value=True, help="Requires TURN credentials in Secrets. Fixes strict NAT/firewalls.")
+    st.caption("Add TURN creds in Cloud → Settings → Secrets:\n\n"
+               "[turn]\nurl_1 = \"turn:global.relay.metered.ca:80\"\nurl_2 = \"turns:global.relay.metered.ca:443?transport=tcp\"\nusername = \"YOUR_USER\"\ncredential = \"YOUR_PASS\"")
 
 # 40/60 layout
 left_col, right_col = st.columns([4, 6])
 
 with left_col:
     st.subheader("Live Analysis")
+
     webrtc_ctx = webrtc_streamer(
         key="bitepulse-live-intake",
         mode=WebRtcMode.SENDRECV,
@@ -443,7 +447,7 @@ with left_col:
             },
             "audio": False,
         },
-        rtc_configuration=build_rtc_config(),  # <<< IMPORTANT: STUN/TURN
+        rtc_configuration=build_rtc_config(force_turn),  # <<< critical
         async_processing=True,
         video_html_attrs={
             "style": {
@@ -458,10 +462,16 @@ with left_col:
         },
     )
 
-    # Fallback padding before play
-    is_playing = getattr(getattr(webrtc_ctx, "state", None), "playing", False)
-    if not is_playing:
-        st.markdown(f"<div style='height:6px'></div>", unsafe_allow_html=True)
+    # ICE status banner
+    state = getattr(webrtc_ctx, "state", None)
+    conn_state = getattr(state, "connection_state", None)
+    ice_state = getattr(state, "ice_connection_state", None)
+    if ice_state in ("failed", "disconnected", "closed"):
+        st.error(f"ICE state: {ice_state}. Enable 'Force TURN' and add TURN secrets.")
+    elif ice_state in ("checking", "new"):
+        st.warning(f"ICE state: {ice_state} (negotiating...)")
+    elif ice_state == "connected":
+        st.success("ICE state: connected")
 
 with right_col:
     st.subheader("Session Statistics")
@@ -511,7 +521,7 @@ with right_col:
             st.markdown('<div class="section-subtitle">Charts</div>', unsafe_allow_html=True)
             render_bite_tabs(summary, session if session else BiteSession())
 
-# Data pump (read from processor)
+# Data pump
 vp = getattr(webrtc_ctx, "video_processor", None)
 summary = None
 session_ref = None
@@ -524,13 +534,11 @@ if "last_summary" not in st.session_state:
     st.session_state["last_summary"] = None
 
 summary_to_show = summary or st.session_state.get("last_summary")
-# Render once per run
 with right_col:
     render_dashboard(summary_to_show, session_ref)
 if summary:
     st.session_state["last_summary"] = summary
 
-# Gentle polling when playing
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
