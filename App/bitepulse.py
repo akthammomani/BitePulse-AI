@@ -578,7 +578,7 @@ if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
 
-st.write('---')
+
 
 null9_0, row9_1, row9_2 = st.columns((0.02, 5, 0.05))
 with row9_1.expander("Leave Us a Comment or Question"):
@@ -595,7 +595,8 @@ with row9_1.expander("Leave Us a Comment or Question"):
 
     # Use Local CSS File
     local_css("style.css")
-
+    
+st.write('---')
 null10_0, row10_1, row10_2 = st.columns((0.04, 7, 0.4))
 with row10_1:
     st.write("""
@@ -606,6 +607,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2024. All rights reserved.
     """)
+
 
 
 
