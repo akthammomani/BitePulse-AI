@@ -451,7 +451,7 @@ with left_col:
         mode=WebRtcMode.SENDRECV,
         video_processor_factory=BitePulseProcessor,
         media_stream_constraints={
-            "video": True,        # let the browser pick a compatible resolution
+            "video": True,        
             "audio": False,
         },
         rtc_configuration=cfg,
@@ -548,6 +548,7 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
 
 
