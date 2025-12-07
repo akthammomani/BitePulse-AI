@@ -58,7 +58,7 @@ All metrics are computed per session and update continuously:
   Here $b_i$ are bite timestamps in seconds.
 
 - **% Intake (`intake_pct`)** Share of frames flagged as “intake”:  
-  $$\%\,\mathrm{intake} = 100 \times \frac{\sum_{k=1}^{N}\mathrm{intake\_flag}_k}{N}$$
+  $$\mathrm{intake} = 100 \times \frac{\sum_{k=1}^{N}\mathrm{intake\_flag}_k}{N}$$
   Where $\mathrm{intake\_flag}_k \in \{0,1\}$ for frame $k$ and $N$ is the number of frames.
 
 - **Pauses** (`pause_count`)  
