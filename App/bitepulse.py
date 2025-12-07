@@ -473,7 +473,7 @@ with left_col:
             "style": {
                 "width": "100%",
                 "height": f"{DISPLAY_HEIGHT_PX}px", #"100%",
-                "objectFit": "cover",
+                "objectFit": "contain",#"cover",
                 "border": "0",
                 "borderRadius": "10px"
             },
@@ -561,4 +561,5 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
+
 
