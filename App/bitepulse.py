@@ -439,8 +439,8 @@ st.markdown("""
 <div class="flex-container">
     <div class="flex-item introduction">
         <h2>Introduction</h2>
-        <p><strong>BitePulse AI</strong> is your privacy-respecting, real-time eating coach. Research shows that eating too quickly can disrupt your body's natural fullness signals (which take ~20 minutes to register), leading to overeating and digestive discomfort.</p>
-        <p>By simply monitoring your rhythm, this tool helps you practice <strong>Mindful Eating</strong>—a habit proven to improve digestion, reduce stress, and enhance meal satisfaction.</p>
+        <p><strong>BitePulse AI</strong> is your privacy-respecting, real-time eating coach. Research shows that eating too quickly can disrupt your body's natural fullness signals, leading to overeating and digestive discomfort.</p>
+        <p>By simply monitoring your rhythm, this tool helps you practice <strong>Mindful Eating</strong> - a habit proven to improve digestion, reduce stress, and enhance meal satisfaction.</p>
     </div>
     <div class="flex-item how-it-works">
         <h2>How it works</h2>
@@ -593,6 +593,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
