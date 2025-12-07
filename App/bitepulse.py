@@ -23,38 +23,33 @@ PAUSE_THRESHOLD_SEC = 10.0
 # ---------------------------
 # ICE config (STUN + TURN)
 # ---------------------------
-# ---------------------------
-# ICE config (STUN + TURN)
-# ---------------------------
-# ---- ICE config (STUN + TURN) ----
 def build_rtc_config(force_turn: bool) -> dict:
     """
-    STUN only if we're NOT forcing TURN. When force_turn=True we send only TURN over TCP/TLS
-    and set iceTransportPolicy='relay' (browser side).
+    Reads TURN settings from secrets:
+      [turn]
+      url_tcp1   = "turn:global.relay.metered.ca:80?transport=tcp"
+      url_tcp2   = "turns:global.relay.metered.ca:443?transport=tcp"
+      username   = "<from Metered>"
+      credential = "<from Metered>"
+
+    If force_turn=True and creds exist, we return TURN-only and set iceTransportPolicy='relay'.
+    Otherwise we return STUN + (optional) TURN.
     """
     turn = st.secrets.get("turn", {})
-    # allow 1–4 TURN URLs, we’ll prefer TLS 443 first
-    turn_urls = [u for u in [
-        turn.get("url_tls"),   # e.g. "turns:global.relay.metered.ca:443?transport=tcp"
-        turn.get("url_tcp"),   # e.g. "turn:global.relay.metered.ca:80?transport=tcp"
-        turn.get("url_3"),
-        turn.get("url_4"),
-    ] if u]
-
-    has_turn = bool(turn_urls and turn.get("username") and turn.get("credential"))
+    # Prefer TLS 443 first (more likely to work on locked-down networks)
+    urls = [u for u in [turn.get("url_tcp2"), turn.get("url_tcp1")] if u]
+    has_turn = bool(urls and turn.get("username") and turn.get("credential"))
 
     if force_turn and has_turn:
-        # TURN ONLY (relay)
         return {
             "iceServers": [{
-                "urls": turn_urls,
+                "urls": urls,
                 "username": turn["username"],
                 "credential": turn["credential"],
             }],
             "iceTransportPolicy": "relay",
         }
 
-    # Otherwise: STUN + (optional) TURN
     ice_servers = [{
         "urls": [
             "stun:stun.l.google.com:19302",
@@ -64,12 +59,11 @@ def build_rtc_config(force_turn: bool) -> dict:
     }]
     if has_turn:
         ice_servers.append({
-            "urls": turn_urls,
+            "urls": urls,
             "username": turn["username"],
             "credential": turn["credential"],
         })
     return {"iceServers": ice_servers}
-
 
 def _safe_rerun():
     if hasattr(st, "rerun"):
@@ -364,7 +358,7 @@ def render_bite_tabs(summary: Dict[str, Any], session: BiteSession):
             fig.add_trace(go.Scatter(
                 x=df_intake["sec"], y=df_intake["intake_ratio"],
                 mode="lines", fill="tozeroy", opacity=0.2, name="Intake ratio (per s)",
-                # IMPORTANT: braces escaped so Python never tries to format them
+                # Escaped braces so Python doesn't try to format the string
                 hovertemplate="t=%{{x}}s<br>intake=%{{y:.2f}}<extra></extra>",
             ))
 
@@ -457,9 +451,6 @@ with st.sidebar:
     st.caption(f"TURN loaded: {'yes' if has_turn else 'no'}")
     st.caption(f"Policy: {cfg.get('iceTransportPolicy', 'all')}")
 
-
-
-
 # 40/60 layout
 left_col, right_col = st.columns([4, 6])
 
@@ -479,7 +470,7 @@ with left_col:
             },
             "audio": False,
         },
-        rtc_configuration=build_rtc_config(force_turn),  # <<< critical
+        rtc_configuration=cfg,  # use the one we just built
         async_processing=True,
         video_html_attrs={
             "style": {
@@ -496,10 +487,9 @@ with left_col:
 
     # ICE status banner
     state = getattr(webrtc_ctx, "state", None)
-    conn_state = getattr(state, "connection_state", None)
     ice_state = getattr(state, "ice_connection_state", None)
     if ice_state in ("failed", "disconnected", "closed"):
-        st.error(f"ICE state: {ice_state}. Enable 'Force TURN' and add TURN secrets.")
+        st.error(f"ICE state: {ice_state}. If this persists, keep 'Force TURN' on and verify TURN secrets.")
     elif ice_state in ("checking", "new"):
         st.warning(f"ICE state: {ice_state} (negotiating...)")
     elif ice_state == "connected":
@@ -574,9 +564,3 @@ if summary:
 if getattr(getattr(webrtc_ctx, "state", None), "playing", False):
     time.sleep(0.2)
     _safe_rerun()
-
-
-
-
-
-
