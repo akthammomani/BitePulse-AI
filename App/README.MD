@@ -111,18 +111,11 @@ All metrics are computed per session and update continuously:
 
 ## **How it works (high level)**
 
-- **WebRTC camera stream**: Your browser grants webcam access and negotiates a peer connection with the app.  
-  NAT traversal uses **STUN** and, when needed, **TURN via Metered.ca** (TLS :443 / TCP :80).  
-  If “Force TURN” is on, traffic relays only through TURN for maximum reachability.
-
+- **WebRTC camera stream**: Your browser grants webcam access and negotiates a peer connection with the app. NAT traversal uses **STUN** and, when needed, **TURN via Metered.ca** (TLS :443 / TCP :80).  
 - **Face & pose landmarks (MediaPipe)**: Each frame is processed to extract a **mouth region** (FaceMesh lips) and **wrist keypoints** (Pose).
-
 - **Intake frame**: A frame is flagged *intake* when the closest wrist is within a distance threshold of the mouth box.
-
 - **Bite event**: One **bite** is registered when there are at least **N consecutive intake frames** (debounces spurious hits).
-
 - **Continuous analytics (real time)**: We compute and display: **BPM (avg), Rolling BPM (30s), % Intake, IBI (inter-bite intervals), Pause count** (gaps > threshold), and **Left/Right hand split**, while drawing an overlay on the live video.
-
 - **Privacy & performance**: Inference runs live; **no video is saved**. Overlay only is rendered back to the browser.
 ---
 
