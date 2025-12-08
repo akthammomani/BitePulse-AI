@@ -1,3 +1,29 @@
+<p align="center">
+  <!-- Language / Core -->
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white">
+  <img alt="Streamlit" src="https://img.shields.io/badge/Streamlit-app-FF4B4B?logo=streamlit&logoColor=white">
+  <img alt="streamlit-webrtc" src="https://img.shields.io/badge/WebRTC-streamlit--webrtc-00897B?logo=webrtc&logoColor=white">
+  <img alt="aiortc" src="https://img.shields.io/badge/WebRTC-aiortc-0A7BBB">
+  <img alt="TURN" src="https://img.shields.io/badge/TURN-Metered.ca-6D28D9">
+  <img alt="OpenCV" src="https://img.shields.io/badge/OpenCV-vision-5C2D91?logo=opencv&logoColor=white">
+  <img alt="MediaPipe" src="https://img.shields.io/badge/MediaPipe-pose%20%26%20face-FF6F00">
+  <img alt="NumPy" src="https://img.shields.io/badge/NumPy-1.26%2B-013243?logo=numpy&logoColor=white">
+  <img alt="Pandas" src="https://img.shields.io/badge/Pandas-2.x-150458?logo=pandas&logoColor=white">
+  <img alt="Plotly" src="https://img.shields.io/badge/Plotly-charts-3F4F75?logo=plotly&logoColor=white">
+
+  <!-- App focus -->
+  <img alt="Real-time feedback" src="https://img.shields.io/badge/Goal-Real--time%20pace%20feedback-6366F1">
+  <img alt="Privacy" src="https://img.shields.io/badge/Privacy-Pose--first%20%7C%20no%20video%20stored-10B981">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Beta-brightgreen">
+  <img alt="License" src="https://img.shields.io/badge/License-MIT-000000">
+</p>
+
+<p align="center">
+  <!-- Replace with your actual logo path or URL -->
+  <img src="docs/bitepulse-logo.png" alt="BitePulse AI logo" width="380" />
+</p>
+
+
 # **BitePulse AI**
 
 Real-time bite detection & eating-pace insights: all on your device via the browser camera.  
