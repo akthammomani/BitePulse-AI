@@ -1,6 +1,6 @@
 # BitePulse AI
 
-Real-time bite detection & eating-pace insights — all on your device via the browser camera.  
+Real-time bite detection & eating-pace insights: all on your device via the browser camera.  
 BitePulse AI passively detects **intake gestures** (hand-to-mouth) and turns them into actionable feedback like **Bites per Minute (BPM)**, pauses, and simple coaching cues (e.g., *Slow*, *Typical*, *Fast*).
 
 > **Privacy:** The app runs computer-vision analysis locally in the session; no video frames are stored or uploaded by the app. WebRTC is used only to get the live stream from your camera.
@@ -26,7 +26,7 @@ BitePulse AI passively detects **intake gestures** (hand-to-mouth) and turns the
 
 ## Demo & quick start
 
-1. **Open the app** (local: `streamlit run app/bitepulse_app.py` or your Streamlit Cloud URL).
+1. [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://bitepulse-ai-test-1.streamlit.app//)
 2. **Allow camera** permissions in your browser when prompted.
 3. Click **Start** under **Live Analysis**.  
 4. Eat normally. The app will:
