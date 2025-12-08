@@ -88,20 +88,23 @@ regular grid of labeled windows that bridge between them. This design enables fa
 
 ## **Methods Used**
 
-* Temporal windowing over frame-level EatSense labels  
-* Pose-based Temporal Convolutional Network (TCN) for intake vs. non-intake
-* RGB 3D-CNN on short frame clips for appearance cues
-* Event-level aggregation from window scores (IoU-based matching, non-max suppression)
-* Class imbalance handling via weighted BCE loss and balanced sampling
-* Evaluation with window-level metrics (accuracy, precision, recall, F1) and event-level PR curves
+- Frame-level labeling on EatSense: 16 original actions collapsed into **INTAKE vs NON-INTAKE**  
+- Pose extraction with **MediaPipe Pose / FaceMesh** and temporal sequences of landmarks per video  
+- **MS-TCN (Multi-Stage Temporal ConvNet)** over pose sequences for frame-level intake detection  
+- Class-imbalance handling with **class-weighted cross-entropy** and careful split design (including 0-intake videos)  
+- Temporal post-processing to turn frame scores into **bite events** (run-length filtering, merging, pacing metrics like BPM, intake %, IBI, pauses)  
+- Model comparison across baselines (Pose TCN, Hyperband TCN, RGB 3D-CNN) using macro P/R/F1, ROC AUC, and PR AUC  
 
 ## **Technologies**
-* Python 3 (Google Colab)
-* PyTorch & Torchvision
-* NumPy & pandas
-* Matplotlib for visualization
-* OpenCV / FFmpeg for video-to-frames extraction
-* Jupyter/Colab notebooks for experimentation and reports
+
+- Python 3 (Google Colab + local dev)
+- **PyTorch** for MS-TCN training/inference, NumPy & pandas for data handling.
+- **MediaPipe** (Pose & FaceMesh) as pre-trained landmark extractors. 
+- **OpenCV / FFmpeg** for video -> frames processing.
+- **Streamlit + streamlit-webrtc** for the BitePulse AI web app and real-time webcam ingestion.  
+- Matplotlib & Plotly for evaluation plots and in-app visualizations. 
+- Pre-trained **BitePulse MS-TCN checkpoint** loaded in the Streamlit app for live intake detection.
+
 
 ## **License**
 
