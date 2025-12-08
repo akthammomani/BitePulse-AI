@@ -80,6 +80,8 @@ When we look at the same sequence in time, we see that intake moments correspond
        alt="Strivio logo" width="700" height="400" />
 </p>
 
+![Image](https://github.com/user-attachments/assets/decda210-db38-4d0e-88ca-2361322f4a9b)
+
 We also observe correlations and redundancies within the raw pose coordinates. Neighboring key points and their absolute image positions are strongly correlated, especially within each limb. To keep the model focused on behavior rather than camera geometry, we express pose features in a head-centered coordinate frame and include simple temporal derivatives instead of a large set of raw coordinates. This reduces input dimensionality and helps the Temporal Convolutional Network focus on relative motion patterns that generalize across subjects and camera setups. For the RGB path we use the same window index to extract short clips of frames, which allows a 3D-CNN to learn complementary appearance
 cues such as utensil type, cup orientation, or partial occlusions that are not visible in pose.
 
