@@ -46,6 +46,47 @@ We'll utilize the data we saved on our google drive from Label prep and task def
 * subject_split.parquet: to avoid subject leakage 
 * true2d_parquet/<key>.parquet: per-frame 2D joints 
 
+## Model Comparison
+
+BitePulse AI went through four modeling stages:
+
+1. **Baseline TCN (Pose-only)** – Initial window-based TCN over pose features.  
+   - Good ROC AUC but very low PR AUC and F1, meaning it mostly learned “non-intake” and missed many true bites.
+
+2. **Hyperband-tuned TCN** – Same architecture with Keras Tuner.  
+   - Slight ROC/PR AUC improvements, but still struggled with recall and precision on rare INTAKE windows.
+
+3. **RGB 3D-CNN** – Heavy video model trained on RGB frame stacks.  
+   - Training was very expensive and PR AUC actually dropped, showing that RGB alone wasn’t enough under our compute budget.
+
+4. **Final Model: MS-TCN (Frame-Level)** – Multi-stage TCN trained on frame-level pose sequences.  
+   - **Best overall metrics:** macro Precision **0.595**, Recall **0.887**, F1 **0.614**, ROC AUC **0.955**, PR AUC **0.605** (see results table below).  
+   - Delivers high recall for INTAKE while keeping precision reasonable, which is critical for bite detection.
+
+> _Table: Model metrics across all experiments (Precision, Recall, F1, ROC AUC, PR AUC)._
+
+![Image](https://github.com/user-attachments/assets/752fc7cf-0119-4195-92df-12eeed1f7959)
+
+### Precision–Recall
+
+The PR curves below show how the final MS-TCN sharply outperforms earlier models on PR AUC, reflecting much better performance on the rare INTAKE class.
+
+![Image](https://github.com/user-attachments/assets/2529d385-c333-4ece-bf0d-3141f2e69177)
+
+### ROC Curves
+
+All models achieve strong ROC AUC, but MS-TCN achieves the highest area, confirming robust separation between INTAKE and NON-INTAKE frames.
+
+![Image](https://github.com/user-attachments/assets/0489a075-dbc2-4821-ac4f-62166c93ee75)
+
+### Confusion Matrices
+
+The confusion matrices highlight the same story:  
+MS-TCN dramatically increases true positives for INTAKE while keeping false positives at a manageable level, compared to the earlier TCN and RGB 3D-CNN baselines.
+
+![Image](https://github.com/user-attachments/assets/a09c4d4b-9d4a-4b0c-9860-7aff21272767)
+
+
 
 
 
