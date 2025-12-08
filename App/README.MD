@@ -18,12 +18,6 @@
   <img alt="License" src="https://img.shields.io/badge/License-MIT-000000">
 </p>
 
-<p align="center">
-  <!-- Replace with your actual logo path or URL -->
-  <img src="docs/bitepulse-logo.png" alt="BitePulse AI logo" width="380" />
-</p>
-
-
 # **BitePulse AI**
 
 Real-time bite detection & eating-pace insights: all on your device via the browser camera.  
