@@ -29,7 +29,7 @@
        alt="Strivio logo" width="400" height="400" />
 </p>
 
-# **BitePulse AI: Real-Time Eating-Pace Feedback from Meal video** 
+# **BitePulse AI: Real-Time Eating-Pace Feedback from Meal video** [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://bitepulse-ai-test-1.streamlit.app//)
 **Temporal Deep Learning for Bite and Sip Detection**
 
 
