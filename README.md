@@ -102,7 +102,7 @@ regular grid of labeled windows that bridge between them. This design enables fa
 - **OpenCV / FFmpeg** for video -> frames processing.
 - **Streamlit + streamlit-webrtc** for the BitePulse AI web app and real-time webcam ingestion.  
 - Matplotlib & Plotly for evaluation plots and in-app visualizations. 
-- Pre-trained **BitePulse MS-TCN checkpoint** loaded in the Streamlit app for live intake detection.
+- Pre-trained **BitePulse MediaPipe checkpoint** loaded in the Streamlit app for live intake detection.
 
 
 ## **License**
