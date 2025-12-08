@@ -50,20 +50,20 @@ We'll utilize the data we saved on our google drive from Label prep and task def
 
 BitePulse AI went through four modeling stages:
 
-1. **Baseline TCN (Pose-only)** – Initial window-based TCN over pose features.  
+1. **Baseline TCN (Pose-only)**: Initial window-based TCN over pose features.  
    - Good ROC AUC but very low PR AUC and F1, meaning it mostly learned “non-intake” and missed many true bites.
 
-2. **Hyperband-tuned TCN** – Same architecture with Keras Tuner.  
+2. **Hyperband-tuned TCN**: Same architecture with Keras Tuner.  
    - Slight ROC/PR AUC improvements, but still struggled with recall and precision on rare INTAKE windows.
 
-3. **RGB 3D-CNN** – Heavy video model trained on RGB frame stacks.  
+3. **RGB 3D-CNN**: Heavy video model trained on RGB frame stacks.  
    - Training was very expensive and PR AUC actually dropped, showing that RGB alone wasn’t enough under our compute budget.
 
-4. **Final Model: MS-TCN (Frame-Level)** – Multi-stage TCN trained on frame-level pose sequences.  
+4. **Final Model: MS-TCN (Frame-Level)**: Multi-stage TCN trained on frame-level pose sequences.  
    - **Best overall metrics:** macro Precision **0.595**, Recall **0.887**, F1 **0.614**, ROC AUC **0.955**, PR AUC **0.605** (see results table below).  
    - Delivers high recall for INTAKE while keeping precision reasonable, which is critical for bite detection.
 
-> _Table: Model metrics across all experiments (Precision, Recall, F1, ROC AUC, PR AUC)._
+> Table: Model metrics across all experiments (Precision, Recall, F1, ROC AUC, PR AUC).
 
 ![Image](https://github.com/user-attachments/assets/752fc7cf-0119-4195-92df-12eeed1f7959)
 
