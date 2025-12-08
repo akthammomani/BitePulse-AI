@@ -1,6 +1,6 @@
 <p align="center">
   <!-- Language / Core -->
-  <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white">
+  <img alt="Python" src="https://img.shields.io/badge/Python-3.9%2B-blue?logo=python&logoColor=white">
   <img alt="Streamlit" src="https://img.shields.io/badge/Streamlit-app-FF4B4B?logo=streamlit&logoColor=white">
   <img alt="streamlit-webrtc" src="https://img.shields.io/badge/WebRTC-streamlit--webrtc-00897B?logo=webrtc&logoColor=white">
   <img alt="aiortc" src="https://img.shields.io/badge/WebRTC-aiortc-0A7BBB">
