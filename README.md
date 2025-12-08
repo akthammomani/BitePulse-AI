@@ -2,27 +2,29 @@
   <!-- Language / Core -->
   <img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white">
   <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-2.x-EE4C2C?logo=pytorch&logoColor=white">
-  <img alt="Torchvision" src="https://img.shields.io/badge/Torchvision-0.17%2B-FF6F00?logo=pytorch&logoColor=white">
   <img alt="NumPy" src="https://img.shields.io/badge/NumPy-1.26%2B-013243?logo=numpy&logoColor=white">
   <img alt="Pandas" src="https://img.shields.io/badge/Pandas-2.x-150458?logo=pandas&logoColor=white">
-  <img alt="Matplotlib" src="https://img.shields.io/badge/Matplotlib-plotting-11557C?logo=python&logoColor=white">
+  <img alt="Matplotlib" src="https://img.shields.io/badge/Plots-Matplotlib%20%7C%20Plotly-11557C?logo=python&logoColor=white">
   <img alt="OpenCV/FFmpeg" src="https://img.shields.io/badge/Video-OpenCV%20%7C%20FFmpeg-5C2D91?logo=opencv&logoColor=white">
+  <img alt="MediaPipe" src="https://img.shields.io/badge/Landmarks-MediaPipe%20Pose%20%7C%20FaceMesh-34A853?logo=google&logoColor=white">
 
   <!-- Modeling / ML -->
-  <img alt="TCN" src="https://img.shields.io/badge/Model-Temporal%20ConvNet-0EA5E9">
-  <img alt="3D CNN" src="https://img.shields.io/badge/Model-3D%20CNN%20(RGB)-F97316">
+  <img alt="MS-TCN" src="https://img.shields.io/badge/Model-MS--TCN%20(frame--level)-0EA5E9">
+  <img alt="Baselines" src="https://img.shields.io/badge/Baselines-Pose%20TCN%20%7C%203D%20CNN-F97316">
   <img alt="Pose features" src="https://img.shields.io/badge/Features-2D%20pose%20%7C%20wrist%20kinematics-10B981">
-  <img alt="Event-level eval" src="https://img.shields.io/badge/Evaluation-Event--level%20IoU-8B5CF6">
-  <img alt="Real-time feedback" src="https://img.shields.io/badge/Goal-Real--time%20pace%20feedback-6366F1">
-  <img alt="Privacy" src="https://img.shields.io/badge/Privacy-Pose--first%20%7C%20on--device%20ready-F59E0B">
+  <img alt="Imbalance" src="https://img.shields.io/badge/Loss-Class--weighted%20CE-8B5CF6">
+  <img alt="Evaluation" src="https://img.shields.io/badge/Eval-ROC%20AUC%20%7C%20PR%20AUC-6366F1">
+  <img alt="Privacy" src="https://img.shields.io/badge/Privacy-Pose--first%20%7C%20on--device--ready-F59E0B">
 
-  <!-- Demo / Ops -->
+  <!-- Demo / App -->
   <img alt="Colab" src="https://img.shields.io/badge/Train-Google%20Colab-0F9D58?logo=googlecolab&logoColor=white">
-  <img alt="Streamlit demo" src="https://img.shields.io/badge/Demo-Streamlit-FF4B4B?logo=streamlit&logoColor=white">
+  <img alt="Streamlit app" src="https://img.shields.io/badge/App-Streamlit%20%7C%20streamlit--webrtc-FF4B4B?logo=streamlit&logoColor=white">
+  <img alt="Real time" src="https://img.shields.io/badge/Mode-Real--time%20bite%20detection-brightgreen">
   <img alt="Dataset" src="https://img.shields.io/badge/Dataset-EatSense-4B5563">
   <img alt="License" src="https://img.shields.io/badge/License-MIT-000000">
-  <img alt="Status" src="https://img.shields.io/badge/Status-Research%20prototype-brightgreen">
+  <img alt="Status" src="https://img.shields.io/badge/Status-Research%20prototype-22C55E">
 </p>
+
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/64d9919e-ff96-4588-ae68-75c3f22b160e" 
