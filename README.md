@@ -75,11 +75,6 @@ Exploratory analysis of the window table reveals several patterns that connect d
 
 When we look at the same sequence in time, we see that intake moments correspond to sharp peaks in wrist speed and characteristic changes in elbow angle. below chart shows wrist speed and elbow angle over the first five seconds of the same clip. Short bursts of high wrist velocity align with rapid elbow flexion as the utensil approaches the mouth, followed by a slower return. These patterns motivate the use of temporal convolution rather than purely frame-wise models and suggest that pose-only features should be sufficient for a strong baseline.
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/a232f79d-4398-4637-8df8-d20ef1bddd54"   
-       alt="Strivio logo" width="700" height="400" />
-</p>
-
 ![Image](https://github.com/user-attachments/assets/decda210-db38-4d0e-88ca-2361322f4a9b)
 
 We also observe correlations and redundancies within the raw pose coordinates. Neighboring key points and their absolute image positions are strongly correlated, especially within each limb. To keep the model focused on behavior rather than camera geometry, we express pose features in a head-centered coordinate frame and include simple temporal derivatives instead of a large set of raw coordinates. This reduces input dimensionality and helps the Temporal Convolutional Network focus on relative motion patterns that generalize across subjects and camera setups. For the RGB path we use the same window index to extract short clips of frames, which allows a 3D-CNN to learn complementary appearance
