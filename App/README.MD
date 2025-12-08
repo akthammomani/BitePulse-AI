@@ -55,7 +55,8 @@ All metrics are computed per session and update continuously:
 
 - **Rolling BPM (30s)** For each second $t$, count bites in the last 30 seconds and scale to per-minute:  
 
-  $$\mathrm{rolling_bpm}(t) = \frac{\#\{\,b_i \mid t-30 < b_i \le t\,\}}{30/60} = 2 \cdot \#\{\,b_i \mid t-30 < b_i \le t\,\}$$
+  $$\mathrm{rolling\_bpm}(t)= \frac{\left|\{\, b_i \mid t-30 < b_i \le t \,\}\right|}{30/60}= 2 \, \left|\{\, b_i \mid t-30 < b_i \le t \,\}\right|$$
+
 
   Here $b_i$ are bite timestamps in seconds.
 
