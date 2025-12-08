@@ -18,7 +18,7 @@
   <img alt="License" src="https://img.shields.io/badge/License-MIT-000000">
 </p>
 
-# **BitePulse AI**
+# **BitePulse AI** [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_red.svg)](https://bitepulse-ai-test-1.streamlit.app//)
 
 Real-time bite detection & eating-pace insights: all on your device via the browser camera.  
 BitePulse AI passively detects **intake gestures** (hand-to-mouth) and turns them into actionable feedback like **Bites per Minute (BPM)**, pauses, and simple coaching cues (e.g., *Slow*, *Typical*, *Fast*).
