@@ -65,7 +65,7 @@ BitePulse AI went through four modeling stages:
 
 > Table: Model metrics across all experiments (Precision, Recall, F1, ROC AUC, PR AUC).
 
-![Image](https://github.com/user-attachments/assets/752fc7cf-0119-4195-92df-12eeed1f7959)
+![Image](https://github.com/user-attachments/assets/be9cf6bc-1813-4b17-98c9-9012f40c5f96)
 
 ### Precision–Recall
 
