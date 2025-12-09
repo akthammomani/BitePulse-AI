@@ -17,7 +17,7 @@ from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
 # ---------------------------
 # Video/analysis parameters
 # ---------------------------
-OUT_W, OUT_H = 640, 500          
+OUT_W, OUT_H = 640, 480          
 PAUSE_THRESHOLD_SEC = 10.0
 
 # ---------------------------
@@ -593,6 +593,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
