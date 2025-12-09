@@ -84,7 +84,7 @@ All models achieve strong ROC AUC, but MS-TCN achieves the highest area, confirm
 The confusion matrices highlight the same story:  
 MS-TCN dramatically increases true positives for INTAKE while keeping false positives at a manageable level, compared to the earlier TCN and RGB 3D-CNN baselines.
 
-![Image](https://github.com/user-attachments/assets/a09c4d4b-9d4a-4b0c-9860-7aff21272767)
+![Image](https://github.com/user-attachments/assets/f67d03e8-fd8a-4cca-9b97-358dcc3ae362)
 
 
 
