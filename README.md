@@ -41,6 +41,23 @@ This project is the Capstone Project (AAI-590) for [the M.S. in Applied Artifici
 
 -- **Project Status: Completed**
 
+## **Table of contents**
+
+- [Abstract](#abstract)
+- [Introduction](#introduction)
+- [BitePulse AI Audience](#bitepulse-ai-audience)
+- [Data Summary](#data-summary)
+- [Methods Used](#methods-used)
+- [Technologies](#technologies)
+- [Model Results](#model-results)
+- [BitePulse AI Streamlit App](#bitepulse-ai-streamlit-app)
+- [Conclusion](#conclusion)
+- [How to Run](#how-to-run)
+- [Repository Layout](#repository-layout)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
+- [Citation](#citation)
+
 ## **Abstract**
 
 Most of us have no idea how fast we really eat until a doctor, a coach, or a bad stomach reminds us. BitePulse AI asks a simple question: can a short phone video give people that feedback in real time, without human scoring or sharing their data? To explore this idea, we train temporal deep learning models on a labeled meal dataset to detect intake events (bites) and estimate eating pace. A pose-based Temporal Convolutional Network is used as a lightweight baseline, and a 3D-CNN on RGB clips adds appearance cues. We report window-level and event-level performance, examine precision–recall tradeoffs, and discuss what these results imply for a future, privacy-respecting, on-device "pace coach" that responds in under a minute.
