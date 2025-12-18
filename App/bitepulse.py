@@ -10,6 +10,12 @@ import av
 import numpy as np
 import pandas as pd
 import mediapipe as mp
+try:
+    # Old style: mediapipe.solutions
+    mp_solutions = mp.solutions
+except AttributeError:
+    # Newer layouts: mediapipe.python.solutions
+    from mediapipe.python import solutions as mp_solutions
 import plotly.express as px
 import plotly.graph_objects as go
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
@@ -593,6 +599,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
