@@ -10,12 +10,6 @@ import av
 import numpy as np
 import pandas as pd
 import mediapipe as mp
-try:
-    # Old style: mediapipe.solutions
-    mp_solutions = mp.solutions
-except AttributeError:
-    # Newer layouts: mediapipe.python.solutions
-    from mediapipe.python import solutions as mp_solutions
 import plotly.express as px
 import plotly.graph_objects as go
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, VideoProcessorBase
@@ -78,13 +72,11 @@ def draw_text_with_outline(img, text, x, y, font_scale, color, thickness=2):
 # ---------------------------
 # Mediapipe setup
 # ---------------------------
-#mp_pose = mp.solutions.pose
-#mp_face = mp.solutions.face_mesh
-#POSE_LANDMARKS = mp_pose.PoseLandmark
-
-mp_pose = mp_solutions.pose
-mp_face = mp_solutions.face_mesh
+mp_pose = mp.solutions.pose
+mp_face = mp.solutions.face_mesh
 POSE_LANDMARKS = mp_pose.PoseLandmark
+
+
 
 MOUTH_LIPS_INDICES = [
     61, 146, 91, 181, 84, 17, 314, 405, 321, 375, 291, 308,
@@ -603,6 +595,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
