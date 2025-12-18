@@ -78,8 +78,12 @@ def draw_text_with_outline(img, text, x, y, font_scale, color, thickness=2):
 # ---------------------------
 # Mediapipe setup
 # ---------------------------
-mp_pose = mp.solutions.pose
-mp_face = mp.solutions.face_mesh
+#mp_pose = mp.solutions.pose
+#mp_face = mp.solutions.face_mesh
+#POSE_LANDMARKS = mp_pose.PoseLandmark
+
+mp_pose = mp_solutions.pose
+mp_face = mp_solutions.face_mesh
 POSE_LANDMARKS = mp_pose.PoseLandmark
 
 MOUTH_LIPS_INDICES = [
@@ -599,6 +603,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
