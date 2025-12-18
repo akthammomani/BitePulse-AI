@@ -2,7 +2,7 @@ streamlit
 streamlit-webrtc>=0.47.0
 aiortc>=1.6.0
 av>=10.0.0
-mediapipe
+mediapipe==0.10.9
 numpy
 pandas
 plotly
