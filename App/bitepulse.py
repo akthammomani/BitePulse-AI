@@ -454,6 +454,7 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+st.write('---')
 
 force_turn = True 
 cfg = build_rtc_config(force_turn)
@@ -595,6 +596,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
