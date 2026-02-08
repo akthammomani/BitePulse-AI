@@ -1,11 +1,14 @@
-/* ---------- Palette tuned to Live Analysis gray ---------- */
 :root {
-    --bp-page:   #f5f7fb;   /* same family as Live Analysis */
-    --bp-card:   #ffffff;   /* cards */
-    --bp-border: #e5e7eb;   /* light border */
-    --bp-accent: #ff6b6b;   /* coral accent */
-    --bp-dark:   #111827;   /* main text */
-    --bp-muted:  #6b7280;   /* secondary text */
+    /* Page + neutrals */
+    --bp-page:   #f3f4f6;   /* page background */
+    --bp-card1:  #ffffff;
+    --bp-card2:  #f7f8fc;   /* light gray like Live Analysis */
+    --bp-border: #e2e5f0;
+    --bp-dark:   #111827;
+    --bp-muted:  #6b7280;
+
+    /* Soft accent (blue-gray) */
+    --bp-accent: #4f8fd6;
 }
 
 /* Page */
@@ -15,7 +18,7 @@ body {
     color: var(--bp-dark);
 }
 
-/* -------- Intro / How it works cards -------- */
+/* ---------- Intro / How it works cards ---------- */
 .flex-container {
     display: flex;
     gap: 20px;
@@ -23,10 +26,16 @@ body {
 }
 
 .flex-item {
-    background-color: var(--bp-card);
+    /* subtle gradient so it is not flat or boring */
+    background: linear-gradient(
+        135deg,
+        var(--bp-card1) 0%,
+        var(--bp-card2) 55%,
+        #edf1fb 100%
+    );
     color: var(--bp-dark);
     padding: 22px;
-    border-radius: 16px;
+    border-radius: 18px;
     margin-bottom: 24px;
     display: flex;
     flex-direction: column;
@@ -35,14 +44,25 @@ body {
     overflow-y: auto;
 
     border: 1px solid var(--bp-border);
-    border-left: 5px solid var(--bp-accent);
-    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.05);
 }
 
+/* slim accent bar that matches Live Analysis instead of red */
+.flex-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 14px;
+    bottom: 14px;
+    width: 4px;
+    border-radius: 999px;
+    background: var(--bp-accent);
+}
+
+/* keep your widths */
 .flex-item.introduction {
     width: 40% !important;
 }
-
 .flex-item.how-it-works {
     width: 60% !important;
 }
@@ -59,7 +79,26 @@ body {
     color: var(--bp-muted);
 }
 
-/* -------- Inputs / textareas -------- */
+/* ---------- Buttons (including START) ---------- */
+.stButton > button,
+button[type=submit] {
+    background-color: var(--bp-accent) !important;
+    color: #ffffff !important;
+    border: none;
+    padding: 10px 22px;
+    font-size: 15px;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+}
+
+.stButton > button:hover,
+button[type=submit]:hover {
+    background-color: #3c78ba !important;
+}
+
+/* Inputs / textareas match the gray card style */
 input[type=text],
 input[type=email],
 textarea {
@@ -79,39 +118,7 @@ input[type=email]:focus,
 textarea:focus {
     outline: none;
     border-color: var(--bp-accent);
-    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25);
-}
-
-/* -------- Buttons (including Start) -------- */
-button[type=submit],
-.stButton > button {
-    background-color: var(--bp-accent) !important;
-    color: #ffffff !important;
-    border: none;
-    padding: 10px 22px;
-    font-size: 15px;
-    border-radius: 999px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-}
-
-button[type=submit]:hover,
-.stButton > button:hover {
-    background-color: #e95b5b !important;
-}
-
-/* -------- Streamlit controls -------- */
-.stSelectbox select,
-textarea {
-    border: 1px solid var(--bp-border) !important;
-    background-color: #f9fafb;
-}
-
-.stSelectbox select:focus,
-textarea:focus {
-    border-color: var(--bp-accent) !important;
-    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25);
+    box-shadow: 0 0 0 2px rgba(79, 143, 214, 0.25);
 }
 
 .stMarkdown h2 {
