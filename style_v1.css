@@ -1,22 +1,21 @@
-/* --------- BitePulse palette --------- */
+/* ---------- Palette tuned to Live Analysis gray ---------- */
 :root {
-    --bp-bg:        #f3f4f6;   /* page background */
-    --bp-card:      #ffffff;   /* cards */
-    --bp-teal:      #46b6b0;   /* from logo */
-    --bp-teal-soft: #e6f5f4;
-    --bp-coral:     #ff7f6c;   /* accent / buttons */
-    --bp-dark:      #111827;
-    --bp-muted:     #6b7280;
+    --bp-page:   #f5f7fb;   /* same family as Live Analysis */
+    --bp-card:   #ffffff;   /* cards */
+    --bp-border: #e5e7eb;   /* light border */
+    --bp-accent: #ff6b6b;   /* coral accent */
+    --bp-dark:   #111827;   /* main text */
+    --bp-muted:  #6b7280;   /* secondary text */
 }
 
 /* Page */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: var(--bp-bg);
+    background-color: var(--bp-page);
     color: var(--bp-dark);
 }
 
-/* ------------ Intro / How it works cards ------------ */
+/* -------- Intro / How it works cards -------- */
 .flex-container {
     display: flex;
     gap: 20px;
@@ -24,10 +23,10 @@ body {
 }
 
 .flex-item {
-    background: linear-gradient(135deg, var(--bp-card), var(--bp-teal-soft));
+    background-color: var(--bp-card);
     color: var(--bp-dark);
     padding: 22px;
-    border-radius: 18px;
+    border-radius: 16px;
     margin-bottom: 24px;
     display: flex;
     flex-direction: column;
@@ -35,8 +34,9 @@ body {
     max-height: 320px;
     overflow-y: auto;
 
-    border-left: 6px solid var(--bp-teal);
-    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.10);
+    border: 1px solid var(--bp-border);
+    border-left: 5px solid var(--bp-accent);
+    box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
 }
 
 .flex-item.introduction {
@@ -59,13 +59,13 @@ body {
     color: var(--bp-muted);
 }
 
-/* ------------ Inputs / textareas ------------ */
+/* -------- Inputs / textareas -------- */
 input[type=text],
 input[type=email],
 textarea {
     width: 100%;
     padding: 12px;
-    border: 1px solid #d1d5db;
+    border: 1px solid var(--bp-border);
     border-radius: 6px;
     box-sizing: border-box;
     margin-top: 6px;
@@ -78,55 +78,42 @@ input[type=text]:focus,
 input[type=email]:focus,
 textarea:focus {
     outline: none;
-    border-color: var(--bp-teal);
-    box-shadow: 0 0 0 2px rgba(70, 182, 176, 0.25);
+    border-color: var(--bp-accent);
+    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25);
 }
 
-/* ------------ Primary button (e.g., Start) ------------ */
-button[type=submit] {
-    background-color: var(--bp-coral);
-    color: #ffffff;
-    padding: 12px 22px;
-    border: none;
-    border-radius: 999px;
-    cursor: pointer;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-}
-
-button[type=submit]:hover {
-    background-color: #ef6a57;
-}
-
-/* Streamlit button (if you use st.button) */
+/* -------- Buttons (including Start) -------- */
+button[type=submit],
 .stButton > button {
-    background-color: var(--bp-coral) !important;
+    background-color: var(--bp-accent) !important;
     color: #ffffff !important;
     border: none;
-    padding: 10px 24px;
+    padding: 10px 22px;
     font-size: 15px;
     border-radius: 999px;
     font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
 }
 
+button[type=submit]:hover,
 .stButton > button:hover {
-    background-color: #ef6a57 !important;
+    background-color: #e95b5b !important;
 }
 
-/* ------------ Selectbox & textareas in Streamlit ------------ */
+/* -------- Streamlit controls -------- */
 .stSelectbox select,
 textarea {
-    border: 1px solid #d1d5db !important;
+    border: 1px solid var(--bp-border) !important;
     background-color: #f9fafb;
 }
 
 .stSelectbox select:focus,
 textarea:focus {
-    border-color: var(--bp-teal) !important;
-    box-shadow: 0 0 0 2px rgba(70, 182, 176, 0.25);
+    border-color: var(--bp-accent) !important;
+    box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.25);
 }
 
-/* Streamlit headings */
 .stMarkdown h2 {
     color: var(--bp-dark);
 }
