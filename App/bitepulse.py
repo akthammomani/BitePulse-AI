@@ -454,6 +454,11 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+st.write("#### Learn More")
+st.markdown("[![](https://img.shields.io/badge/GitHub-BitePulse%20AI%20Repository-informational)](https://github.com/akthammomani/BitePulse-AI)")
+
+
 st.write('---')
 
 force_turn = True 
@@ -596,6 +601,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
