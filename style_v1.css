@@ -1,100 +1,103 @@
-/* Additional custom styles */
-input[type=text], input[type=email], textarea {
-    width: 100%; /* Full width */
-    padding: 12px; /* Some padding */ 
-    border: 1px solid #ccc; /* Gray border */
-    border-radius: 4px; /* Rounded borders */
-    box-sizing: border-box; /* Make sure that padding and width stays in place */
-    margin-top: 6px; /* Add a top margin */
-    margin-bottom: 16px; /* Bottom margin */
-    resize: vertical; /* Allow the user to vertically resize the textarea (not horizontally) */
+/* Inputs */
+input[type=text],
+input[type=email],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d0d4e4;   /* soft gray border */
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
 }
 
+/* Form button */
 button[type=submit] {
-    background-color: #04AA6D;
-    color: white;
+    background-color: #f0f2f6;   /* same gray as page / cards */
+    color: #333;
     padding: 12px 20px;
-    border: none;
+    border: 1px solid #d0d4e4;
     border-radius: 4px;
     cursor: pointer;
 }
 
 button[type=submit]:hover {
-    background-color: #45a049;
+    background-color: #e0e4ee;  /* slightly darker gray on hover */
 }
 
+/* Intro / How-it-works cards */
 .flex-container {
     display: flex;
     gap: 20px;
-    align-items: stretch; /* Ensure equal height */
+    align-items: stretch;
 }
 
 .flex-item {
-    background-color: #FFFBF7 !important; /* Background color #FAEBD7 */
-    color: black; /* Black text color */
-    padding: 20px; /* Some padding */
-    border-radius: 15px; /* Rounded borders */
-    margin-bottom: 20px; /* Some space below each box */
+    background-color: #f0f2f6 !important;  /* match Live Analysis panel */
+    color: #333;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
-    min-height: 200px; /* Set minimum height */
-    max-height: 300px; /* Set maximum height */
-    overflow-y: auto; /* Add scroll if content overflows */
+    min-height: 200px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 .flex-item.introduction {
-    width: 40% !important; /* Set width to 35% */
+    width: 40% !important;
 }
 
 .flex-item.how-it-works {
-    width: 60% !important; /* Set width to 65% */
+    width: 60% !important;
 }
 
-.flex-item h2, .flex-item h3 {
-    color: black; /* Ensure headers inside the box are also black */
+.flex-item h2,
+.flex-item h3 {
+    color: #000;
     margin-bottom: 10px;
 }
 
-.flex-item p, .flex-item ul {
+.flex-item p,
+.flex-item ul {
     flex-grow: 1;
 }
 
+/* Page background */
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f0f2f6;
+    background-color: #f0f2f6;   /* same gray family */
     color: #333;
 }
 
-.stButton>button {
-    background-color: #FAEBD7 !important; /* Change button background color */
-    color: black;
-    border: none;
+/* Streamlit button */
+.stButton > button {
+    background-color: #f0f2f6 !important;
+    color: #333;
+    border: 1px solid #d0d4e4;
     padding: 10px 20px;
     font-size: 16px;
     border-radius: 5px;
 }
 
-.stButton>button:hover {
-    background-color: #0056b3 !important; /* Change button hover background color */
+.stButton > button:hover {
+    background-color: #e0e4ee !important;
 }
 
+/* Streamlit headings */
 .stMarkdown h2 {
     color: #000000;
 }
 
-.stSelectbox select {
-    border: 1px solid #FAEBD7 !important;
-}
-
-.stSelectbox select:focus {
-    border-color: #0056b3;
-    box-shadow: 0 0 5px #0056b3;
-}
-
+/* Streamlit selectbox + textarea to use same gray borders */
+.stSelectbox select,
 textarea {
-    border: 1px solid #FAEBD7 !important;
+    border: 1px solid #d0d4e4 !important;
 }
 
+.stSelectbox select:focus,
 textarea:focus {
     border-color: #0056b3;
     box-shadow: 0 0 5px #0056b3;
