@@ -1,32 +1,22 @@
-/* Inputs */
-input[type=text],
-input[type=email],
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d0d4e4;   /* soft gray border */
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin-top: 6px;
-    margin-bottom: 16px;
-    resize: vertical;
+/* --------- BitePulse palette --------- */
+:root {
+    --bp-bg:        #f3f4f6;   /* page background */
+    --bp-card:      #ffffff;   /* cards */
+    --bp-teal:      #46b6b0;   /* from logo */
+    --bp-teal-soft: #e6f5f4;
+    --bp-coral:     #ff7f6c;   /* accent / buttons */
+    --bp-dark:      #111827;
+    --bp-muted:     #6b7280;
 }
 
-/* Form button */
-button[type=submit] {
-    background-color: #f0f2f6;   /* same gray as page / cards */
-    color: #333;
-    padding: 12px 20px;
-    border: 1px solid #d0d4e4;
-    border-radius: 4px;
-    cursor: pointer;
+/* Page */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: var(--bp-bg);
+    color: var(--bp-dark);
 }
 
-button[type=submit]:hover {
-    background-color: #e0e4ee;  /* slightly darker gray on hover */
-}
-
-/* Intro / How-it-works cards */
+/* ------------ Intro / How it works cards ------------ */
 .flex-container {
     display: flex;
     gap: 20px;
@@ -34,16 +24,19 @@ button[type=submit]:hover {
 }
 
 .flex-item {
-    background-color: #f0f2f6 !important;  /* match Live Analysis panel */
-    color: #333;
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 20px;
+    background: linear-gradient(135deg, var(--bp-card), var(--bp-teal-soft));
+    color: var(--bp-dark);
+    padding: 22px;
+    border-radius: 18px;
+    margin-bottom: 24px;
     display: flex;
     flex-direction: column;
     min-height: 200px;
-    max-height: 300px;
+    max-height: 320px;
     overflow-y: auto;
+
+    border-left: 6px solid var(--bp-teal);
+    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.10);
 }
 
 .flex-item.introduction {
@@ -56,49 +49,84 @@ button[type=submit]:hover {
 
 .flex-item h2,
 .flex-item h3 {
-    color: #000;
+    color: var(--bp-dark);
     margin-bottom: 10px;
 }
 
 .flex-item p,
 .flex-item ul {
     flex-grow: 1;
+    color: var(--bp-muted);
 }
 
-/* Page background */
-body {
-    font-family: 'Arial', sans-serif;
-    background-color: #f0f2f6;   /* same gray family */
-    color: #333;
+/* ------------ Inputs / textareas ------------ */
+input[type=text],
+input[type=email],
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+    background-color: #f9fafb;
 }
 
-/* Streamlit button */
+input[type=text]:focus,
+input[type=email]:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--bp-teal);
+    box-shadow: 0 0 0 2px rgba(70, 182, 176, 0.25);
+}
+
+/* ------------ Primary button (e.g., Start) ------------ */
+button[type=submit] {
+    background-color: var(--bp-coral);
+    color: #ffffff;
+    padding: 12px 22px;
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+button[type=submit]:hover {
+    background-color: #ef6a57;
+}
+
+/* Streamlit button (if you use st.button) */
 .stButton > button {
-    background-color: #f0f2f6 !important;
-    color: #333;
-    border: 1px solid #d0d4e4;
-    padding: 10px 20px;
-    font-size: 16px;
-    border-radius: 5px;
+    background-color: var(--bp-coral) !important;
+    color: #ffffff !important;
+    border: none;
+    padding: 10px 24px;
+    font-size: 15px;
+    border-radius: 999px;
+    font-weight: 600;
 }
 
 .stButton > button:hover {
-    background-color: #e0e4ee !important;
+    background-color: #ef6a57 !important;
 }
 
-/* Streamlit headings */
-.stMarkdown h2 {
-    color: #000000;
-}
-
-/* Streamlit selectbox + textarea to use same gray borders */
+/* ------------ Selectbox & textareas in Streamlit ------------ */
 .stSelectbox select,
 textarea {
-    border: 1px solid #d0d4e4 !important;
+    border: 1px solid #d1d5db !important;
+    background-color: #f9fafb;
 }
 
 .stSelectbox select:focus,
 textarea:focus {
-    border-color: #0056b3;
-    box-shadow: 0 0 5px #0056b3;
+    border-color: var(--bp-teal) !important;
+    box-shadow: 0 0 0 2px rgba(70, 182, 176, 0.25);
+}
+
+/* Streamlit headings */
+.stMarkdown h2 {
+    color: var(--bp-dark);
 }
