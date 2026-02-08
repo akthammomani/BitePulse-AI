@@ -1,136 +1,19 @@
-/* -------------------------
-   BitePulse AI – Global vars
--------------------------- */
-:root {
-    --bp-card-gray:   #f5f7fb;     /* card background (match Live Analysis feel) */
-    --bp-border-gray: #e1e4ec;     /* subtle card border */
-    --bp-accent-red:  #ff4b4b;     /* accent + Start button */
-}
-
-/* -------------------------
-   Base page styles
--------------------------- */
-body {
-    font-family: "Arial", sans-serif;
-    background-color: #f0f2f6;
-    color: #333333;
-}
-
-/* Section titles rendered by st.markdown */
-.stMarkdown h2 {
-    color: #000000;
-}
-
-/* -------------------------
-   Intro / How it works layout
--------------------------- */
-.flex-container {
-    display: flex;
-    gap: 20px;
-    align-items: stretch;
-}
-
+/* --- Match Intro / How it works cards to Live Analysis gray --- */
 .flex-item {
-    background-color: var(--bp-card-gray);
+    /* try a bluish gray very close to Streamlit containers */
+    background-color: #f5f5f9;          /* card fill */
+    border: 1px solid #e3e6f0;          /* subtle outline */
+    border-left: 6px solid #ff4b4b;     /* keep the red accent edge */
+    box-shadow: 0 8px 14px rgba(15, 23, 42, 0.03);
     color: #111827;
-    padding: 24px;
-    border-radius: 16px;
-    margin-bottom: 24px;
-
-    display: flex;
-    flex-direction: column;
-    min-height: 200px;
-    max-height: 320px;
-    overflow-y: auto;
-
-    border: 1px solid var(--bp-border-gray);
-    border-left: 6px solid var(--bp-accent-red);  /* red accent edge */
-    box-shadow: 0 10px 18px rgba(15, 23, 42, 0.04);
-}
-
-.flex-item.introduction {
-    width: 40% !important;
-}
-
-.flex-item.how-it-works {
-    width: 60% !important;
 }
 
 .flex-item h2,
 .flex-item h3 {
     color: #111827;
-    margin-bottom: 10px;
 }
 
 .flex-item p,
 .flex-item ul {
-    flex-grow: 1;
     color: #4b5563;
-}
-
-/* -------------------------
-   Form controls
--------------------------- */
-input[type=text],
-input[type=email],
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin-top: 6px;
-    margin-bottom: 16px;
-    resize: vertical;
-    background-color: #ffffff;
-}
-
-/* focus state */
-textarea:focus,
-input[type=text]:focus,
-input[type=email]:focus,
-.stSelectbox select:focus {
-    border-color: var(--bp-accent-red);
-    box-shadow: 0 0 5px rgba(255, 75, 75, 0.4);
-    outline: none;
-}
-
-/* Streamlit selectbox */
-.stSelectbox select {
-    border: 1px solid #d1d5db !important;
-    border-radius: 4px;
-}
-
-/* -------------------------
-   Buttons (Start + others)
--------------------------- */
-button[type=submit],
-.stButton > button {
-    background-color: var(--bp-accent-red) !important;
-    color: #ffffff !important;
-    border: none;
-    padding: 10px 22px;
-    font-size: 15px;
-    border-radius: 999px;
-    font-weight: 600;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-}
-
-button[type=submit]:hover,
-.stButton > button:hover {
-    background-color: #e03d3d !important;
-}
-
-/* -------------------------
-   Misc tweaks
--------------------------- */
-/* keep markdown lists inside cards tight */
-.flex-item ul {
-    padding-left: 20px;
-}
-
-/* optional: reduce top padding on Streamlit main container */
-.block-container {
-    padding-top: 1rem;
 }
