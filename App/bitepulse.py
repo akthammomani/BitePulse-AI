@@ -455,15 +455,12 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-st.write("#### Learn More")
-st.markdown("[![](https://img.shields.io/badge/GitHub-BitePulse%20AI%20Repository-informational)](https://github.com/akthammomani/BitePulse-AI)")
-
 st.markdown("### Learn More")
 
 st.markdown(
     "[![GitHub](https://img.shields.io/badge/GitHub-BitePulse%20AI%20Repository-informational?logo=github)]"
     "(https://github.com/akthammomani/BitePulse-AI) "
-    "[![PDF](https://img.shields.io/badge/PDF-Capstone%20Report-red?logo=adobeacrobatreader)]"
+    "[![Publication](https://img.shields.io/badge/Publication-PDF-success?logo=adobeacrobatreader)]"
     "(https://github.com/akthammomani/BitePulse-AI/blob/main/docs/BitePulse%20AI%20-%20Real-Time%20Eating-Pace%20Feedback%20from%20Meal%20video.pdf)"
 )
 
@@ -611,6 +608,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
