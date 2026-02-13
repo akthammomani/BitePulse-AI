@@ -424,6 +424,8 @@ st.set_page_config(
     layout="wide", 
     initial_sidebar_state="collapsed")
 
+st.markdown("<br>", unsafe_allow_html=True)
+
 st.title("BitePulse AI")
 st.caption("Real-time bite detection & eating pace insights.")
 
@@ -608,6 +610,7 @@ with row10_1:
         [![MAIL Badge](https://img.shields.io/badge/-aktham.momani81@gmail.com-c14438?style=flat-square&logo=Gmail&logoColor=white&link=mailto:aktham.momani81@gmail.com)](mailto:aktham.momani81@gmail.com)
         ###### © Aktham Momani, 2025. All rights reserved.
     """)
+
 
 
 
